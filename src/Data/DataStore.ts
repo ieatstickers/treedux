@@ -29,7 +29,7 @@ export class DataStore<StateInterface>
   
   public get state()
   {
-    return StateNode.create<StateInterface>({keyPath: [this.KEY]}, this.treedux);
+    return StateNode.create<StateInterface>({ keyPath: [this.KEY] }, this.treedux);
   }
   
   public setTreedux(treedux: Treedux): this
