@@ -58,7 +58,7 @@ export class StateNode<T>
       return this.lastKnownValue;
     }
     
-    const keys = [...this.keyPath];
+    const keys = [ ...this.keyPath ];
     const state = this.treedux.getState();
     
     if (keys.length === 0) return state;
@@ -91,7 +91,7 @@ export class StateNode<T>
     return Action.create(
       {
         type: DefaultActionEnum.SET_BY_KEY_PATH,
-        payload: {keyPath: this.keyPath, value: value}
+        payload: { keyPath: this.keyPath, value: value }
       },
       this.treedux.dispatch.bind(this.treedux)
     );
@@ -112,7 +112,7 @@ export class StateNode<T>
   public use(): { value: T, set: (value: T) => Action }
   {
     // TODO: Add useState hooks
-    return {value: this.get(), set: this.set.bind(this)};
+    return { value: this.get(), set: this.set.bind(this) };
   }
   
   private createProxy(): RecursiveStateNode<T>
