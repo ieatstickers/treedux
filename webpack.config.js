@@ -22,7 +22,7 @@ module.exports = {
         use:  [
           {
             loader:  'ts-loader',
-            options: {allowTsInNodeModules: true}
+            options: { allowTsInNodeModules: true }
           }
         ]
       }

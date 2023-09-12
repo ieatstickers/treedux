@@ -2,35 +2,39 @@ import { DataStore } from "./src/Data/DataStore";
 import { Treedux } from "./src/Treedux";
 
 // Define data store interface
-interface TestDataStore {
-  testKey: string
+interface UserStore {
+  user: { name: string },
+  plan: { code: string, name: string, expiry: Date },
+  status: string
 }
 
 // Define data store
-const testDataStore = DataStore.create<TestDataStore>('test', {
+const userDataStore = DataStore.create<UserStore>('user', {
   initialState: {
-    testKey: null
+    user: null,
+    plan: null,
+    status: null
   }
 })
 
 // Init treedux
 const treedux = Treedux.init({
-  test: testDataStore
+  user: userDataStore
 })
 
 // Get initial value
-const testVal = treedux.state.test.testKey.get();
+const userStatus = treedux.state.user.status.get();
 
-console.log('testVal', testVal);
+console.log('status', userStatus);
 
 // Subscribe to changes
-treedux.state.test.testKey.subscribe((testVal) => {
-  console.log('testKey changed!', testVal);
+treedux.state.user.status.subscribe((testVal) => {
+  console.log('status changed!', testVal);
 })
 
 // Set value
 treedux.dispatch(
-  treedux.state.test.testKey.set('one'),
-  treedux.state.test.testKey.set('two'),
-  treedux.state.test.testKey.set('three')
+  treedux.state.user.status.set('one'),
+  treedux.state.user.status.set('two'),
+  treedux.state.user.status.set('three')
 );
