@@ -99,7 +99,7 @@ export class Treedux<DataStoreMap extends DefaultDataStoreMap = DefaultDataStore
     return this.storeInstance.subscribe(callback);
   }
   
-  public dispatch(...actions: Array<Action>): void
+  public dispatch(...actions: Array<Action<any>>): void
   {
     if (!this.storeInstance) throw "Cannot dispatch action. Redux store has not been initialized.";
     
