@@ -4,8 +4,7 @@ import { Objects } from "../Utility/Objects";
 import { Action } from "./Action";
 
 type StateNodeOptions<T> = {
-  keyPath?: Array<string>;
-  getter?: () => T;
+  keyPath: Array<string>;
 }
 
 type OwnKeys<T> = {
@@ -16,48 +15,28 @@ type RecursiveStateNode<T> = T extends object
   ? StateNode<T> & { [K in OwnKeys<T>]: RecursiveStateNode<T[K]> }
   : StateNode<T>;
 
-type OptionsWithGetter<T> = Extract<StateNodeOptions<T>, { getter: () => T }>;
-
 export class StateNode<T>
 {
   private readonly treedux: Treedux;
   private lastKnownValue: T;
   private readonly keyPath: Array<string> = [];
-  private readonly getter: () => T;
   
   protected constructor(
     options: StateNodeOptions<T>,
     treedux: Treedux
   )
   {
-    if (
-      // If neither keyPath nor getter are set
-      (!options.keyPath && !options.getter)
-      // Or if both keyPath and getter are set
-      || (options.keyPath && options.getter)
-    )
-    {
-      throw "StateNodeOptions must contain 'keyPath' OR 'getter'"
-    }
-    
     this.treedux = treedux;
-    if (options.keyPath) this.keyPath = options.keyPath;
-    if (options.getter) this.getter = options.getter;
+    this.keyPath = options.keyPath;
   }
   
-  public static create<T, Options extends StateNodeOptions<T> = StateNodeOptions<T>>(options: StateNodeOptions<T>, treedux: Treedux): Options extends OptionsWithGetter<T> ? StateNode<T> : RecursiveStateNode<T>
+  public static create<T, Options extends StateNodeOptions<T> = StateNodeOptions<T>>(options: StateNodeOptions<T>, treedux: Treedux): RecursiveStateNode<T>
   {
     return (new StateNode<T>(options, treedux)).createProxy();
   }
   
   public get(): T
   {
-    if (this.getter)
-    {
-      this.lastKnownValue = this.getter();
-      return this.lastKnownValue;
-    }
-    
     const keys = [ ...this.keyPath ];
     const state = this.treedux.getState();
     
