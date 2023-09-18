@@ -86,14 +86,14 @@ export class StateNode<T>
     return this.lastKnownValue;
   }
   
-  public set(value: T): Action
+  public set(value: T): Action<{ keyPath: Array<string>, value: T }>
   {
     return Action.create(
       {
         type: DefaultActionEnum.SET_BY_KEY_PATH,
         payload: { keyPath: this.keyPath, value: value }
       },
-      this.treedux.dispatch.bind(this.treedux)
+      this.treedux
     );
   }
   
@@ -109,7 +109,7 @@ export class StateNode<T>
     })
   }
   
-  public use(): { value: T, set: (value: T) => Action }
+  public use(): { value: T, set: (value: T) => Action<{ keyPath: Array<string>, value: T }> }
   {
     // TODO: Add useState hooks
     return { value: this.get(), set: this.set.bind(this) };

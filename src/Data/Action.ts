@@ -1,32 +1,32 @@
-type DispatchAction = (action: Action) => void
+import { Treedux } from "../Treedux";
 
-export class Action
+export class Action<Payload>
 {
-  private readonly dispatchAction: DispatchAction;
+  private readonly treedux: Treedux;
   public readonly type: string;
-  public readonly payload: any;
+  public readonly payload: Payload;
 
-  private constructor(action: { type: string, payload: any }, dispatch: DispatchAction)
+  private constructor(action: { type: string, payload?: Payload }, treedux: Treedux)
   {
     this.type = action.type;
     this.payload = action.payload;
-    this.dispatchAction = dispatch;
+    this.treedux = treedux;
   }
 
-  public static create(
-    action: { type: string, payload: any },
-    dispatch: (action: Action) => void
-  ): Action
+  public static create<Payload>(
+    action: { type: string, payload?: Payload },
+    treedux: Treedux
+  ): Action<Payload>
   {
-    return new Action(action, dispatch);
+    return new Action(action, treedux);
   }
 
   public dispatch(): void
   {
-    this.dispatchAction(this);
+    this.treedux.dispatch(this);
   }
 
-  public serialize(): { type: string, payload: any }
+  public serialize(): { type: string, payload?: Payload }
   {
     return { type: this.type, payload: this.payload };
   }
