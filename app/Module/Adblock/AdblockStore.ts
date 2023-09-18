@@ -23,8 +23,6 @@ export class AdblockStore
         },
         mutators: {
           userSettings: {
-            test: (treedux: Treedux) => AddToWhitelist.create(treedux),
-            
             whitelist: {
               add: (treedux: Treedux) => AddToWhitelist.create(treedux),
               remove: (treedux: Treedux) => RemoveFromWhitelist.create(treedux),
