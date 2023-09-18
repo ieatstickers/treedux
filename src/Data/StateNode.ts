@@ -2,6 +2,7 @@ import { DefaultActionEnum } from "../Enum/DefaultActionEnum";
 import { Treedux } from "../Treedux";
 import { Objects } from "../Utility/Objects";
 import { Action } from "./Action";
+import { IsPOJO } from "../Type/IsPojo";
 
 type StateNodeOptions<T> = {
   keyPath: Array<string>;
@@ -11,7 +12,7 @@ type OwnKeys<T> = {
   [K in keyof T]: (T extends Record<string, any> ? K extends keyof T ? K : never : never);
 }[keyof T];
 
-type RecursiveStateNode<T> = T extends object
+type RecursiveStateNode<T> = IsPOJO<T> extends true
   ? StateNode<T> & { [K in OwnKeys<T>]: RecursiveStateNode<T[K]> }
   : StateNode<T>;
 
