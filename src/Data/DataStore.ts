@@ -1,22 +1,12 @@
 import { CreateSliceOptions } from "@reduxjs/toolkit/src/createSlice";
 import { Treedux } from "../Treedux";
 import { StateNode } from "./StateNode";
-import { IsPOJO } from "../Type/IsPojo";
-import { MutatorCreator } from "../Type/MutatorCreator";
-
-type Mutators<NodeType, State> = {
-  // For each key
-  [K in keyof NodeType]?: IsPOJO<NodeType[K]> extends true
-    // If type of value is a plain JS object, recurse
-    ? Mutators<NodeType[K], State> | { [key: string]: MutatorCreator<State> }
-    // If type of value is not a plain JS object, can be an map of mutators
-    : { [key: string]: MutatorCreator<State> }
-}
+import { DataStoreMutators } from "../Type/DataStoreMutators";
 
 interface DataStoreOptions<State>
 {
   initialState: State;
-  mutators?: Mutators<State, State>;
+  mutators?: DataStoreMutators<State, State>;
 }
 
 export class DataStore<StateInterface>
