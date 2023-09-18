@@ -2,10 +2,7 @@ import { CreateSliceOptions } from "@reduxjs/toolkit/src/createSlice";
 import { Treedux } from "../Treedux";
 import { StateNode } from "./StateNode";
 import { MutatorInterface } from "./MutatorInterface";
-
-type IsPOJO<T> = T extends Record<string, any>
-  ? (T extends any[] | ((...args: any[]) => any) | Date | RegExp ? false : true)
-  : false;
+import { IsPOJO } from "../Type/IsPojo";
 
 type Mutators<NodeType, State> = {
   // For each key
