@@ -12,11 +12,16 @@ export class AddToWhitelist extends AbstractMutator<AdblockStateInterface> imple
     return new AddToWhitelist(treedux);
   }
   
+  public getType()
+  {
+    return `${AdblockStore.KEY}:add_to_whitelist`;
+  }
+  
   public getAction(...domains: Array<string>)
   {
     return Action.create(
       {
-        type: `${AdblockStore.KEY}:add_to_whitelist`,
+        type: this.getType(),
         payload: domains
       },
       this.treedux

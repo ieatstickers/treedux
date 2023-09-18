@@ -11,11 +11,16 @@ export class RemoveFromWhitelist extends AbstractMutator<AdblockStateInterface>
     return new RemoveFromWhitelist(treedux);
   }
   
+  public getType()
+  {
+    return `${AdblockStore.KEY}:remove_from_whitelist`;
+  }
+  
   public getAction(...domains: Array<string>)
   {
     return Action.create(
       {
-        type: `${AdblockStore.KEY}:remove_from_whitelist`,
+        type: this.getType(),
         payload: domains
       },
       this.treedux

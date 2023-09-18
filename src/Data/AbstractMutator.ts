@@ -12,6 +12,8 @@ export abstract class AbstractMutator<State> implements MutatorInterface<State>
     this.treedux = treedux;
   }
   
+  public abstract getType(): string;
+  
   public abstract getAction(...args: any): Action<any>;
   
   public abstract reduce(state: State, action: ReduxAction): State;
