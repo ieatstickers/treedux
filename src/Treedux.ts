@@ -6,7 +6,7 @@ import { DefaultActionEnum } from "./Enum/DefaultActionEnum";
 import { Objects } from "./Utility/Objects";
 
 // Default map of data store key to DataStore instance
-type DefaultDataStoreMap = { [key: string]: DataStore<any> };
+type DefaultDataStoreMap = { [key: string]: DataStore<any, any> };
 
 // Reducer map for Redux store
 type ReducerMap<DataStoreMap extends DefaultDataStoreMap> = {

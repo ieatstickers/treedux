@@ -12,6 +12,8 @@ const treedux = Treedux.init(
   }
 )
 
+treedux.state.adblock.userSettings.whitelist.add(treedux).getAction('www.example-domain.com').dispatch()
+
 // Get initial value
 const userName = treedux.state.user.user.name.get();
 

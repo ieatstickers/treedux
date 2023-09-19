@@ -8,10 +8,19 @@ import { ClearWhitelist } from "./Mutator/ClearWhitelist";
 export class AdblockStore
 {
   public static KEY: 'adblock' = 'adblock';
+  private static readonly mutators = {
+    userSettings: {
+      whitelist: {
+        add: (treedux: Treedux) => AddToWhitelist.create(treedux),
+        remove: (treedux: Treedux) => RemoveFromWhitelist.create(treedux),
+        clear: (treedux: Treedux) => ClearWhitelist.create(treedux)
+      },
+    }
+  };
   
   public static create()
   {
-    return DataStore.create<AdblockStateInterface>(
+    return  DataStore.create<AdblockStateInterface, typeof this.mutators>(
       this.KEY,
       {
         initialState: {
@@ -21,15 +30,7 @@ export class AdblockStore
             userDisabledFilters: []
           }
         },
-        mutators: {
-          userSettings: {
-            whitelist: {
-              add: (treedux: Treedux) => AddToWhitelist.create(treedux),
-              remove: (treedux: Treedux) => RemoveFromWhitelist.create(treedux),
-              clear: (treedux: Treedux) => ClearWhitelist.create(treedux)
-            },
-          }
-        }
+        mutators: this.mutators
       }
     )
   }

@@ -2,21 +2,16 @@ import { DefaultActionEnum } from "../Enum/DefaultActionEnum";
 import { Treedux } from "../Treedux";
 import { Objects } from "../Utility/Objects";
 import { Action } from "./Action";
-import { IsPOJO } from "../Type/IsPojo";
+import { RecursiveStateNode } from "../Type/RecursiveStateNode";
+import { MutatorCreators } from "../Type/MutatorCreators";
+import { StateNodeInterface } from "../Type/StateNodeInterface";
 
 type StateNodeOptions<T> = {
-  keyPath: Array<string>;
+  keyPath: Array<string>,
+  mutators?: MutatorCreators<T>
 }
 
-type OwnKeys<T> = {
-  [K in keyof T]: (T extends Record<string, any> ? K extends keyof T ? K : never : never);
-}[keyof T];
-
-type RecursiveStateNode<T> = IsPOJO<T> extends true
-  ? StateNode<T> & { [K in OwnKeys<T>]: RecursiveStateNode<T[K]> }
-  : StateNode<T>;
-
-export class StateNode<T>
+export class StateNode<T, Options extends StateNodeOptions<T> = StateNodeOptions<T>> implements StateNodeInterface<T>
 {
   private readonly treedux: Treedux;
   private lastKnownValue: T;
@@ -31,9 +26,9 @@ export class StateNode<T>
     this.keyPath = options.keyPath;
   }
   
-  public static create<T, Options extends StateNodeOptions<T> = StateNodeOptions<T>>(options: StateNodeOptions<T>, treedux: Treedux): RecursiveStateNode<T>
+  public static create<T, Options extends StateNodeOptions<T> = StateNodeOptions<T>>(options: StateNodeOptions<T>, treedux: Treedux): RecursiveStateNode<T, Options['mutators']>
   {
-    return (new StateNode<T>(options, treedux)).createProxy();
+    return (new StateNode<T, Options>(options, treedux)).createProxy();
   }
   
   public get(): T
@@ -95,7 +90,7 @@ export class StateNode<T>
     return { value: this.get(), set: this.set.bind(this) };
   }
   
-  private createProxy(): RecursiveStateNode<T>
+  private createProxy(): RecursiveStateNode<T, Options['mutators']>
   {
     return new Proxy(this, {
       get(target, property: string | symbol)
@@ -128,6 +123,6 @@ export class StateNode<T>
         // Default to returning the property (even if it doesn't exist)
         return target[property];
       },
-    }) as unknown as RecursiveStateNode<T>
+    }) as unknown as RecursiveStateNode<T, Options['mutators']>
   }
 }
