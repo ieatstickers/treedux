@@ -12,7 +12,20 @@ const treedux = Treedux.init(
   }
 )
 
-treedux.state.adblock.userSettings.whitelist.add(treedux).getAction('www.example-domain.com').dispatch()
+// TODO: Type-hinting doesn't recognise add (mutator override) and subscribe (default method) as methods off the bat
+//  and require brackets to be added manually unlike get and set (default methods), which add the brackets automatically
+//  when you hit enter and put the cursor inside the brackets
+treedux.state.adblock.userSettings.whitelist.add
+treedux.state.adblock.userSettings.whitelist.subscribe
+
+treedux
+  .state
+  .adblock
+  .userSettings
+  .whitelist
+  .add(treedux)
+  .getAction('www.example-domain.com') // TODO: Rather than whitelist.add().getAction(), need to refactor to allow whitelist.add() and pull through the types of the mutator class getAction method
+  .dispatch()
 
 // Get initial value
 const userName = treedux.state.user.user.name.get();
