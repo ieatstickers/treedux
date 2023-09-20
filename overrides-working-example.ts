@@ -1,29 +1,30 @@
 // Your basic methods for each state node
 import { Action } from "./src/Data/Action";
 
-type StateNodeMethods<Type> = {
+interface StateNodeInterface<Type>
+{
   get(): Type,
-  set(value: Type): void,
+  set(value: Type): Action<{ keyPath: Array<string>, value: Type }>
   subscribe(callback: (data: Type) => void): () => void,
   use(): { value: Type, set: (value: Type) => Action<{ keyPath: Array<string>, value: Type }> }
 }
 
 // Overrides type definition
-export type Overrides<Type> = {
+export type MutatorCreators<Type> = {
   [K in keyof Type]?: Type[K] extends Record<string, any>
-    ? Overrides<Type[K]>
+    ? MutatorCreators<Type[K]>
     : { [key: string]: (...args: Array<any>) => any }
 } | { [key: string]: (...args: Array<any>) => any }
 
 // Helper type to merge StateNodeMethods with any Overrides
-type MergeMethods<T, O extends Overrides<T>> = O & StateNodeMethods<T>;
+type StateNodeWithMutatorCreators<StateNodeType, StateNodeMutatorCreators extends MutatorCreators<StateNodeType>> = StateNodeInterface<StateNodeType> & StateNodeMutatorCreators;
 
 // Recursive type to generate the structure of your state tree with type-hinted methods
-type RecursiveStateNode<Type, Override extends Overrides<Type> = {}> = {
-  [K in keyof Type]: Type[K] extends Record<string, any>
-    ? RecursiveStateNode<Type[K], K extends keyof Override ? Override[K] : {}>
-    & MergeMethods<Type[K], K extends keyof Override ? Override[K] : {}>
-    : StateNodeMethods<Type[K]>
+type RecursiveStateNode<StateNodeType, StateNodeMutatorCreators extends MutatorCreators<StateNodeType> = {}> = {
+  [K in keyof StateNodeType]: StateNodeType[K] extends Record<string, any>
+    ? RecursiveStateNode<StateNodeType[K], K extends keyof StateNodeMutatorCreators ? StateNodeMutatorCreators[K] : {}>
+    & StateNodeWithMutatorCreators<StateNodeType[K], K extends keyof StateNodeMutatorCreators ? StateNodeMutatorCreators[K] : {}>
+    : StateNodeInterface<StateNodeType[K]>
 }
 
 // Example state structure
