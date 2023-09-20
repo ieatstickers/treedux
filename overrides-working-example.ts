@@ -1,4 +1,5 @@
 // Your basic methods for each state node
+import { Treedux } from "./src/Treedux";
 import { Action } from "./src/Data/Action";
 
 interface StateNodeInterface<Type>
@@ -9,12 +10,33 @@ interface StateNodeInterface<Type>
   use(): { value: Type, set: (value: Type) => Action<{ keyPath: Array<string>, value: Type }> }
 }
 
+interface MutatorInterface<State>
+{
+  // getType(): string;
+  // getAction(...args: any): Action<any>;
+  // reduce(state: State, action: ReduxAction): State;
+}
+
+class Mutator<Type> implements MutatorInterface<Type>
+{
+  public test(): string
+  {
+    return  'test';
+  }
+}
+
+type IsPOJO<T> = T extends Record<string, any>
+  ? true// (T extends any[] | ((...args: any[]) => any) | Date | RegExp ? false : true)
+  : false;
+
+type MutatorCreator<StateInterface> = (treedux: Treedux) => MutatorInterface<StateInterface>
+
 // Overrides type definition
 export type MutatorCreators<Type> = {
   [K in keyof Type]?: Type[K] extends Record<string, any> // TODO: Replace with IsPOJO
     ? MutatorCreators<Type[K]>
-    : { [key: string]: (...args: Array<any>) => any } // TODO: Replace with MutatorCreator type (needs to be added)
-} | { [key: string]: (...args: Array<any>) => any } // TODO: Replace with MutatorCreator type (needs to be added)
+    : { [key: string]: MutatorCreator<Type[K]> }
+} | { [key: string]: MutatorCreator<Type> }
 
 // Helper type to merge StateNodeMethods with any Overrides
 type StateNodeWithMutatorCreators<StateNodeType, StateNodeMutatorCreators extends MutatorCreators<StateNodeType>> = StateNodeInterface<StateNodeType> & StateNodeMutatorCreators;
@@ -43,8 +65,8 @@ interface StateInterface {
 const overrides = {
   a: {
     e: {
-      add: (amount: number) => {},
-      subtract: (amount: number) => {}
+      add: () => new Mutator<number>(),
+      remove: () => new Mutator<number>()
     }
   }
 }
@@ -61,5 +83,5 @@ e.subscribe((eValue) => {
 })
 
 e.set(123);
-e.add(123); // This errors (which is expected)
-e.subtract(23);
+e.add();
+e.remove();
