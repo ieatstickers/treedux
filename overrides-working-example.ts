@@ -72,18 +72,26 @@ type RecursiveStateNode<StateNodeType, StateNodeMutatorCreators extends MutatorC
     // For each key in the POJO
     [K in OwnKeys<StateNodeType>]: RecursiveStateNode<StateNodeType[K], StateNodeMutatorCreators extends Record<K, any> ? StateNodeMutatorCreators[K] : {}>
   }
+  
+  
+// EXAMPLE 1
 
-// Example state structure
-interface StateInterface {
+
+const mutators = {
   a: {
     b: {
-      c: string
-    },
-    d: string,
-    e: Array<number>
-  },
-  f: number
+      c: {
+        remove: () => new Mutator<string>(),
+        tits: () => new Mutator<string>(),
+      }
+    }
+  }
 }
+
+const node: RecursiveStateNode<MyStateInterface, typeof mutators> = null;
+
+
+// EXAMPLE 2
 
 // Your example overrides
 const overrides = {
@@ -95,14 +103,22 @@ const overrides = {
   }
 }
 
-let stateNode: RecursiveStateNode<StateInterface, typeof overrides> = null;
+const getNode = (): RecursiveStateNode<MyStateInterface, typeof overrides> => {
+  return null;
+}
 
-const a = stateNode.a
-const b = stateNode.a.b
-const c = stateNode.a.b.c
-const d = stateNode.a.d
-const e = stateNode.a.e
-const f = stateNode.f.get()
+let stateNode = getNode();
+
+stateNode.a.e.remove(); // TODO: THIS ONE
+
+import { MyStateInterface } from "./MyStateInterface";
+
+// const a = stateNode.a
+// const b = stateNode.a.b
+// const c = stateNode.a.b.c
+// const d = stateNode.a.d
+// const e = stateNode.a.e
+// const f = stateNode.f.get()
 //
 //
 // // const e = stateNode.a.e;
