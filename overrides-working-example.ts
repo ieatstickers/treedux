@@ -28,12 +28,12 @@ class Mutator<Type> implements MutatorInterface<Type>
   {
     return  'example/type';
   }
-  
-  public getAction(): Action<any>
+
+  public getAction(test: string): Action<any>
   {
     return null;
   }
-  
+
   public reduce(state: Type, action: ReduxAction): Type
   {
     return null;
@@ -53,7 +53,16 @@ export type MutatorCreators<Type, StateInterface> = { [key: string]: MutatorCrea
     }
     : { [key: string]: MutatorCreator<StateInterface> }
 
-type StateNodeWithMutatorCreators<StateNodeType, StateInterface, StateNodeMutatorCreators extends MutatorCreators<StateNodeType, StateInterface>> = StateNodeInterface<StateNodeType> & StateNodeMutatorCreators;
+export type MutatorMethods<StateInterface, StateNodeMutatorCreators extends MutatorCreators<{}, StateInterface>> = IsPOJO<StateNodeMutatorCreators> extends true
+  ? {
+    [K in keyof StateNodeMutatorCreators]: StateNodeMutatorCreators[K] extends MutatorCreator<StateInterface>
+      ? ReturnType<StateNodeMutatorCreators[K]>['getAction']
+      : {}
+  }
+  : {}
+
+type StateNodeWithMutators<StateNodeType, StateNodeMutatorMethods extends MutatorMethods<any, any>> = StateNodeInterface<StateNodeType> & StateNodeMutatorMethods;
+
 
 type DefaultKeys = keyof Object
   | keyof Array<any>
@@ -71,13 +80,13 @@ type DefaultKeys = keyof Object
 type OwnKeys<T> = Exclude<keyof T, DefaultKeys>;
 
 type RecursiveStateNode<StateNodeType, StateInterface, StateNodeMutatorCreators extends MutatorCreators<StateNodeType, StateInterface> = {}> =
-  StateNodeWithMutatorCreators<StateNodeType, StateInterface, StateNodeMutatorCreators>
+  StateNodeWithMutators<StateNodeType, MutatorMethods<StateInterface, StateNodeMutatorCreators>>
   & {
     // For each key in the POJO
     [K in OwnKeys<StateNodeType>]: RecursiveStateNode<StateNodeType[K], StateInterface, StateNodeMutatorCreators extends Record<K, any> ? StateNodeMutatorCreators[K] : {}>
   }
-  
-  
+
+
 // EXAMPLE 1
 
 
@@ -112,7 +121,7 @@ const getNode = (): RecursiveStateNode<MyStateInterface, MyStateInterface, typeo
 
 
 function closedScope(node: RecursiveStateNode<MyStateInterface, MyStateInterface, typeof overrides>) {
-  // node.a.e.get()
+  const eNode = node.a.e;
 }
 let stateNode = getNode();
 
