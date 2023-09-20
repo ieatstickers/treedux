@@ -47,8 +47,8 @@ export type MutatorCreators<Type> = { [key: string]: MutatorCreator<Type> }
     ? {
       [K in OwnKeys<Type>]?: MutatorCreators<Type[K]>
     }
-    : {}
-  
+    : { [key: string]: MutatorCreator<Type> }
+
 type StateNodeWithMutatorCreators<StateNodeType, StateNodeMutatorCreators extends MutatorCreators<StateNodeType>> = StateNodeInterface<StateNodeType> & StateNodeMutatorCreators;
 
 type DefaultKeys = keyof Object
