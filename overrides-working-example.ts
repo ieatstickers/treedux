@@ -42,16 +42,13 @@ type IsPOJO<T> = T extends Record<string, any>
 
 type MutatorCreator<StateInterface> = (treedux: Treedux) => MutatorInterface<StateInterface>
 
-export type MutatorCreators<Type> = IsPOJO<Type> extends true
-  ? {
-    [K in OwnKeys<Type>]?: IsPOJO<Type[K]> extends true
-      ? MutatorCreators<Type[K]>
-      : { [key: string]: MutatorCreator<Type[K]> }
-    } | { [key: string]: MutatorCreator<Type> }
-  : {
-      [key: string]: MutatorCreator<Type>
+export type MutatorCreators<Type> = { [key: string]: MutatorCreator<Type> }
+  & IsPOJO<Type> extends true
+    ? {
+      [K in OwnKeys<Type>]?: MutatorCreators<Type[K]>
     }
-    
+    : {}
+  
 type StateNodeWithMutatorCreators<StateNodeType, StateNodeMutatorCreators extends MutatorCreators<StateNodeType>> = StateNodeInterface<StateNodeType> & StateNodeMutatorCreators;
 
 type DefaultKeys = keyof Object
@@ -98,8 +95,7 @@ const overrides = {
   }
 }
 
-// @ts-ignore
-let stateNode: RecursiveStateNode<StateInterface, typeof overrides> = {};
+let stateNode: RecursiveStateNode<StateInterface, typeof overrides> = null;
 
 const a = stateNode.a
 const b = stateNode.a.b
@@ -107,19 +103,19 @@ const c = stateNode.a.b.c
 const d = stateNode.a.d
 const e = stateNode.a.e
 const f = stateNode.f.get()
-
-
-// const e = stateNode.a.e;
-
-// let eNumber = e.get();
 //
-// e.subscribe((eValue) => {
-//   console.log(`E has changed from ${eNumber} to ${eValue}`);
-//   eNumber = eValue;
-// })
-
-
-
-e.set([123]);
-e.add();
-e.remove();
+//
+// // const e = stateNode.a.e;
+//
+// // let eNumber = e.get();
+// //
+// // e.subscribe((eValue) => {
+// //   console.log(`E has changed from ${eNumber} to ${eValue}`);
+// //   eNumber = eValue;
+// // })
+//
+//
+//
+// e.set([123]);
+// e.add();
+// e.remove();
