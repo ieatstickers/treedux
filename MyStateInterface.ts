@@ -9,8 +9,3 @@ export type MyStateInterface = {
   },
   f: number
 }
-
-type B = A;  // Error: Cannot find name 'A'.
-type A = number;
-
-let b: B;
