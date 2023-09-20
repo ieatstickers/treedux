@@ -44,22 +44,37 @@ type MutatorCreator<StateInterface> = (treedux: Treedux) => MutatorInterface<Sta
 
 export type MutatorCreators<Type> = IsPOJO<Type> extends true
   ? {
-    [K in keyof Type]?: IsPOJO<Type[K]> extends true
+    [K in OwnKeys<Type>]?: IsPOJO<Type[K]> extends true
       ? MutatorCreators<Type[K]>
       : { [key: string]: MutatorCreator<Type[K]> }
     } | { [key: string]: MutatorCreator<Type> }
   : {
       [key: string]: MutatorCreator<Type>
     }
-
+    
 type StateNodeWithMutatorCreators<StateNodeType, StateNodeMutatorCreators extends MutatorCreators<StateNodeType>> = StateNodeInterface<StateNodeType> & StateNodeMutatorCreators;
 
-type RecursiveStateNode<StateNodeType, StateNodeMutatorCreators extends MutatorCreators<StateNodeType> = {}> = {
-  [K in keyof StateNodeType]: IsPOJO<StateNodeType[K]> extends true
-    ? RecursiveStateNode<StateNodeType[K], StateNodeMutatorCreators extends Record<K, any> ? StateNodeMutatorCreators[K] : {}>
-    & StateNodeWithMutatorCreators<StateNodeType[K], StateNodeMutatorCreators extends Record<K, any> ? StateNodeMutatorCreators[K] : {}>
-    : StateNodeInterface<StateNodeType[K]>
-}
+type DefaultKeys = keyof Object
+  | keyof Array<any>
+  | keyof Date
+  | keyof RegExp
+  | keyof string
+  | keyof number
+  | keyof boolean
+  | keyof null
+  | keyof undefined
+  | keyof void
+  | keyof symbol
+  | keyof bigint;
+
+type OwnKeys<T> = Exclude<keyof T, DefaultKeys>;
+
+type RecursiveStateNode<StateNodeType, StateNodeMutatorCreators extends MutatorCreators<StateNodeType> = {}> =
+  StateNodeWithMutatorCreators<StateNodeType, StateNodeMutatorCreators>
+  & {
+    // For each key in the POJO
+    [K in OwnKeys<StateNodeType>]: RecursiveStateNode<StateNodeType[K], StateNodeMutatorCreators extends Record<K, any> ? StateNodeMutatorCreators[K] : {}>
+  }
 
 // Example state structure
 interface StateInterface {
@@ -83,19 +98,28 @@ const overrides = {
   }
 }
 
-let stateNode: RecursiveStateNode<StateInterface, typeof overrides>;
+// @ts-ignore
+let stateNode: RecursiveStateNode<StateInterface, typeof overrides> = {};
 
-const e = stateNode.a.e;
+const a = stateNode.a
+const b = stateNode.a.b
+const c = stateNode.a.b.c
+const d = stateNode.a.d
+const e = stateNode.a.e
+const f = stateNode.f.get()
 
-let eNumber = e.get();
 
-e.subscribe((eValue) => {
-  console.log(`E has changed from ${eNumber} to ${eValue}`);
-  eNumber = eValue;
-})
+// const e = stateNode.a.e;
+
+// let eNumber = e.get();
+//
+// e.subscribe((eValue) => {
+//   console.log(`E has changed from ${eNumber} to ${eValue}`);
+//   eNumber = eValue;
+// })
 
 
 
 e.set([123]);
 e.add();
-// e.remove();
+e.remove();
