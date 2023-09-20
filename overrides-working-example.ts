@@ -26,14 +26,14 @@ class Mutator<Type> implements MutatorInterface<Type>
 }
 
 type IsPOJO<T> = T extends Record<string, any>
-  ? true// (T extends any[] | ((...args: any[]) => any) | Date | RegExp ? false : true)
+  ? (T extends any[] | ((...args: any[]) => any) | Date | RegExp ? false : true)
   : false;
 
 type MutatorCreator<StateInterface> = (treedux: Treedux) => MutatorInterface<StateInterface>
 
 // Overrides type definition
 export type MutatorCreators<Type> = {
-  [K in keyof Type]?: Type[K] extends Record<string, any> // TODO: Replace with IsPOJO
+  [K in keyof Type]?: IsPOJO<Type[K]> extends true
     ? MutatorCreators<Type[K]>
     : { [key: string]: MutatorCreator<Type[K]> }
 } | { [key: string]: MutatorCreator<Type> }
@@ -43,9 +43,10 @@ type StateNodeWithMutatorCreators<StateNodeType, StateNodeMutatorCreators extend
 
 // Recursive type to generate the structure of your state tree with type-hinted methods
 type RecursiveStateNode<StateNodeType, StateNodeMutatorCreators extends MutatorCreators<StateNodeType> = {}> = {
-  [K in keyof StateNodeType]: StateNodeType[K] extends Record<string, any> // TODO: Replace with IsPOJO
-    ? RecursiveStateNode<StateNodeType[K], K extends keyof StateNodeMutatorCreators ? StateNodeMutatorCreators[K] : {}>
-    & StateNodeWithMutatorCreators<StateNodeType[K], K extends keyof StateNodeMutatorCreators ? StateNodeMutatorCreators[K] : {}>
+  [K in keyof StateNodeType]: IsPOJO<StateNodeType[K]> extends true
+    // ? RecursiveStateNode<StateNodeType[K], K extends keyof StateNodeMutatorCreators ? StateNodeMutatorCreators[K] : {}>
+    ? RecursiveStateNode<StateNodeType[K], StateNodeMutatorCreators extends Record<K, any> ? StateNodeMutatorCreators[K] : {}>
+    & StateNodeWithMutatorCreators<StateNodeType[K], StateNodeMutatorCreators extends Record<K, any> ? StateNodeMutatorCreators[K] : {}>
     : StateNodeInterface<StateNodeType[K]>
 }
 
@@ -56,7 +57,7 @@ interface StateInterface {
       c: string
     },
     d: string,
-    e: number
+    e: Array<number>
   },
   f: number
 }
@@ -82,6 +83,8 @@ e.subscribe((eValue) => {
   eNumber = eValue;
 })
 
-e.set(123);
+
+
+e.set([123]);
 e.add();
 e.remove();
