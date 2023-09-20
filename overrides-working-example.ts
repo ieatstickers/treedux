@@ -1,6 +1,7 @@
 // Your basic methods for each state node
 import { Treedux } from "./src/Treedux";
 import { Action } from "./src/Data/Action";
+import { Action as ReduxAction } from "@reduxjs/toolkit";
 
 interface StateNodeInterface<Type>
 {
@@ -12,16 +13,26 @@ interface StateNodeInterface<Type>
 
 interface MutatorInterface<State>
 {
-  // getType(): string;
-  // getAction(...args: any): Action<any>;
-  // reduce(state: State, action: ReduxAction): State;
+  getType(): string;
+  getAction(...args: any): Action<State>;
+  reduce(state: State, action: ReduxAction): State;
 }
 
 class Mutator<Type> implements MutatorInterface<Type>
 {
-  public test(): string
+  public getType(): string
   {
-    return  'test';
+    return  'example/type';
+  }
+  
+  public getAction(): Action<any>
+  {
+    return null;
+  }
+  
+  public reduce(state: Type, action: ReduxAction): Type
+  {
+    return null;
   }
 }
 
@@ -31,17 +42,18 @@ type IsPOJO<T> = T extends Record<string, any>
 
 type MutatorCreator<StateInterface> = (treedux: Treedux) => MutatorInterface<StateInterface>
 
-// Overrides type definition
-export type MutatorCreators<Type> = {
-  [K in keyof Type]?: IsPOJO<Type[K]> extends true
-    ? MutatorCreators<Type[K]>
-    : { [key: string]: MutatorCreator<Type[K]> }
-} | { [key: string]: MutatorCreator<Type> }
+export type MutatorCreators<Type> = IsPOJO<Type> extends true
+  ? {
+    [K in keyof Type]?: IsPOJO<Type[K]> extends true
+      ? MutatorCreators<Type[K]>
+      : { [key: string]: MutatorCreator<Type[K]> }
+    } | { [key: string]: MutatorCreator<Type> }
+  : {
+      [key: string]: MutatorCreator<Type>
+    }
 
-// Helper type to merge StateNodeMethods with any Overrides
 type StateNodeWithMutatorCreators<StateNodeType, StateNodeMutatorCreators extends MutatorCreators<StateNodeType>> = StateNodeInterface<StateNodeType> & StateNodeMutatorCreators;
 
-// Recursive type to generate the structure of your state tree with type-hinted methods
 type RecursiveStateNode<StateNodeType, StateNodeMutatorCreators extends MutatorCreators<StateNodeType> = {}> = {
   [K in keyof StateNodeType]: IsPOJO<StateNodeType[K]> extends true
     ? RecursiveStateNode<StateNodeType[K], StateNodeMutatorCreators extends Record<K, any> ? StateNodeMutatorCreators[K] : {}>
@@ -65,13 +77,11 @@ interface StateInterface {
 const overrides = {
   a: {
     e: {
-      add: () => new Mutator<number>(),
-      remove: () => new Mutator<number>()
+      add: () => new Mutator<Array<number>>(),
+      remove: () => new Mutator<Array<number>>()
     }
   }
 }
-
-
 
 let stateNode: RecursiveStateNode<StateInterface, typeof overrides>;
 
@@ -88,4 +98,4 @@ e.subscribe((eValue) => {
 
 e.set([123]);
 e.add();
-e.remove();
+// e.remove();
