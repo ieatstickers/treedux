@@ -1,7 +1,11 @@
 // Your basic methods for each state node
-import { Treedux } from "./src/Treedux";
 import { Action } from "./src/Data/Action";
 import { Action as ReduxAction } from "@reduxjs/toolkit";
+import { MyStateInterface } from "./MyStateInterface";
+
+class Treedux {
+
+}
 
 interface StateNodeInterface<Type>
 {
@@ -42,14 +46,14 @@ type IsPOJO<T> = T extends Record<string, any>
 
 type MutatorCreator<StateInterface> = (treedux: Treedux) => MutatorInterface<StateInterface>
 
-export type MutatorCreators<Type> = { [key: string]: MutatorCreator<Type> }
+export type MutatorCreators<Type, StateInterface> = { [key: string]: MutatorCreator<StateInterface> }
   & IsPOJO<Type> extends true
     ? {
-      [K in OwnKeys<Type>]?: MutatorCreators<Type[K]>
+      [K in OwnKeys<Type>]?: MutatorCreators<Type[K], StateInterface>
     }
-    : { [key: string]: MutatorCreator<Type> }
+    : { [key: string]: MutatorCreator<StateInterface> }
 
-type StateNodeWithMutatorCreators<StateNodeType, StateNodeMutatorCreators extends MutatorCreators<StateNodeType>> = StateNodeInterface<StateNodeType> & StateNodeMutatorCreators;
+type StateNodeWithMutatorCreators<StateNodeType, StateInterface, StateNodeMutatorCreators extends MutatorCreators<StateNodeType, StateInterface>> = StateNodeInterface<StateNodeType> & StateNodeMutatorCreators;
 
 type DefaultKeys = keyof Object
   | keyof Array<any>
@@ -66,11 +70,11 @@ type DefaultKeys = keyof Object
 
 type OwnKeys<T> = Exclude<keyof T, DefaultKeys>;
 
-type RecursiveStateNode<StateNodeType, StateNodeMutatorCreators extends MutatorCreators<StateNodeType> = {}> =
-  StateNodeWithMutatorCreators<StateNodeType, StateNodeMutatorCreators>
+type RecursiveStateNode<StateNodeType, StateInterface, StateNodeMutatorCreators extends MutatorCreators<StateNodeType, StateInterface> = {}> =
+  StateNodeWithMutatorCreators<StateNodeType, StateInterface, StateNodeMutatorCreators>
   & {
     // For each key in the POJO
-    [K in OwnKeys<StateNodeType>]: RecursiveStateNode<StateNodeType[K], StateNodeMutatorCreators extends Record<K, any> ? StateNodeMutatorCreators[K] : {}>
+    [K in OwnKeys<StateNodeType>]: RecursiveStateNode<StateNodeType[K], StateInterface, StateNodeMutatorCreators extends Record<K, any> ? StateNodeMutatorCreators[K] : {}>
   }
   
   
@@ -81,15 +85,14 @@ const mutators = {
   a: {
     b: {
       c: {
-        remove: () => new Mutator<string>(),
-        tits: () => new Mutator<string>(),
+        remove: (treedux: Treedux) => new Mutator<MyStateInterface>(),
+        tits: (treedux: Treedux) => new Mutator<MyStateInterface>(),
       }
     }
   }
 }
 
-const node: RecursiveStateNode<MyStateInterface, typeof mutators> = null;
-
+const node: RecursiveStateNode<MyStateInterface, MyStateInterface, typeof mutators> = null;
 
 // EXAMPLE 2
 
@@ -97,21 +100,22 @@ const node: RecursiveStateNode<MyStateInterface, typeof mutators> = null;
 const overrides = {
   a: {
     e: {
-      add: () => new Mutator<Array<number>>(),
-      remove: () => new Mutator<Array<number>>()
+      add: (treedux: Treedux) => new Mutator<MyStateInterface>(),
+      remove: (treedux: Treedux) => new Mutator<MyStateInterface>()
     }
   }
 }
 
-const getNode = (): RecursiveStateNode<MyStateInterface, typeof overrides> => {
+const getNode = (): RecursiveStateNode<MyStateInterface, MyStateInterface, typeof overrides> => {
   return null;
 }
 
+
+function closedScope(node: RecursiveStateNode<MyStateInterface, MyStateInterface, typeof overrides>) {
+  // node.a.e.get()
+}
 let stateNode = getNode();
 
-stateNode.a.e.remove(); // TODO: THIS ONE
-
-import { MyStateInterface } from "./MyStateInterface";
 
 // const a = stateNode.a
 // const b = stateNode.a.b
