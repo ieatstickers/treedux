@@ -44,7 +44,6 @@ type StateNodeWithMutatorCreators<StateNodeType, StateNodeMutatorCreators extend
 // Recursive type to generate the structure of your state tree with type-hinted methods
 type RecursiveStateNode<StateNodeType, StateNodeMutatorCreators extends MutatorCreators<StateNodeType> = {}> = {
   [K in keyof StateNodeType]: IsPOJO<StateNodeType[K]> extends true
-    // ? RecursiveStateNode<StateNodeType[K], K extends keyof StateNodeMutatorCreators ? StateNodeMutatorCreators[K] : {}>
     ? RecursiveStateNode<StateNodeType[K], StateNodeMutatorCreators extends Record<K, any> ? StateNodeMutatorCreators[K] : {}>
     & StateNodeWithMutatorCreators<StateNodeType[K], StateNodeMutatorCreators extends Record<K, any> ? StateNodeMutatorCreators[K] : {}>
     : StateNodeInterface<StateNodeType[K]>
@@ -71,6 +70,8 @@ const overrides = {
     }
   }
 }
+
+
 
 let stateNode: RecursiveStateNode<StateInterface, typeof overrides>;
 
