@@ -11,17 +11,17 @@ interface StateNodeInterface<Type>
 
 // Overrides type definition
 export type MutatorCreators<Type> = {
-  [K in keyof Type]?: Type[K] extends Record<string, any>
+  [K in keyof Type]?: Type[K] extends Record<string, any> // TODO: Replace with IsPOJO
     ? MutatorCreators<Type[K]>
-    : { [key: string]: (...args: Array<any>) => any }
-} | { [key: string]: (...args: Array<any>) => any }
+    : { [key: string]: (...args: Array<any>) => any } // TODO: Replace with MutatorCreator type (needs to be added)
+} | { [key: string]: (...args: Array<any>) => any } // TODO: Replace with MutatorCreator type (needs to be added)
 
 // Helper type to merge StateNodeMethods with any Overrides
 type StateNodeWithMutatorCreators<StateNodeType, StateNodeMutatorCreators extends MutatorCreators<StateNodeType>> = StateNodeInterface<StateNodeType> & StateNodeMutatorCreators;
 
 // Recursive type to generate the structure of your state tree with type-hinted methods
 type RecursiveStateNode<StateNodeType, StateNodeMutatorCreators extends MutatorCreators<StateNodeType> = {}> = {
-  [K in keyof StateNodeType]: StateNodeType[K] extends Record<string, any>
+  [K in keyof StateNodeType]: StateNodeType[K] extends Record<string, any> // TODO: Replace with IsPOJO
     ? RecursiveStateNode<StateNodeType[K], K extends keyof StateNodeMutatorCreators ? StateNodeMutatorCreators[K] : {}>
     & StateNodeWithMutatorCreators<StateNodeType[K], K extends keyof StateNodeMutatorCreators ? StateNodeMutatorCreators[K] : {}>
     : StateNodeInterface<StateNodeType[K]>
