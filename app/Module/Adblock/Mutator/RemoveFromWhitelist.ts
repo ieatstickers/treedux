@@ -3,8 +3,9 @@ import { AdblockStateInterface } from "../AdblockStateInterface";
 import { AbstractMutator } from "../../../../src/Data/AbstractMutator";
 import { Treedux } from "../../../../src/Treedux";
 import { AdblockStore } from "../AdblockStore";
+import { MutatorInterface } from "../../../../src/Data/MutatorInterface";
 
-export class RemoveFromWhitelist extends AbstractMutator<AdblockStateInterface>
+export class RemoveFromWhitelist extends AbstractMutator<AdblockStateInterface> implements MutatorInterface<AdblockStateInterface>
 {
   public static create(treedux: Treedux)
   {
