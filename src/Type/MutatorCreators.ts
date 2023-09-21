@@ -1,10 +1,11 @@
 
-// Type-hints for the properties present in the Type parameter
-// and forces any custom keys to be functions that return any (soon to be MutatorInterface<Type> when switched out for MutatorCreator)
 import { MutatorCreator } from "./MutatorCreator";
 import { IsPOJO } from "./IsPojo";
 import { OwnKeys } from "./OwnKeys";
 
+// Recursive type that defines the structure of the mutators that can be passed to a state node for a given Type
+// It defines that what type of mutators can be associated with each node in the tree based on what type of data that
+// node represents.
 export type MutatorCreators<Type, StateInterface> = { [key: string]: MutatorCreator<StateInterface> }
   & IsPOJO<Type> extends true
   ? {
