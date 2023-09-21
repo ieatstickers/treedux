@@ -12,28 +12,33 @@ const treedux = Treedux.init(
   }
 )
 
-// .add was type-hinted by the IDE but didn't add the brackets
-treedux.state.adblock.userSettings.whitelist.add
+const whitelistNode = treedux.state.adblock.userSettings.whitelist;
 
-// But if you set the whitelist node to its own variable
-const node = treedux.state.adblock.userSettings.whitelist;
+const whitelist = whitelistNode.get();
 
-// Then .add() is type-hinted AND adds the brackets for you and positions the cursor inside the brackets
-node.add()
+console.log('whitelist', whitelist);
 
-// Get initial value
-const userName = treedux.state.user.user.name.get();
-
-console.log('user name', userName);
-
-// Subscribe to changes
-treedux.state.user.user.name.subscribe((testVal) => {
-  console.log('user name changed!', testVal);
+whitelistNode.subscribe((newWhitelist) => {
+  console.log('whitelist changed!', newWhitelist);
 })
 
-// Set value
-treedux.dispatch(
-  treedux.state.user.user.name.set('one'),
-  treedux.state.user.user.name.set('two'),
-  treedux.state.user.user.name.set('three')
-);
+whitelistNode.add('test.com').dispatch();
+whitelistNode.add('test-2.com');
+
+// // Get initial value
+// const userName = treedux.state.user.user.name.get();
+//
+// console.log('user name', userName);
+//
+// // Subscribe to changes
+// treedux.state.user.user.name.subscribe((testVal) => {
+//   console.log('user name changed!', testVal);
+// })
+//
+// // Set value
+// treedux.dispatch(
+//   treedux.state.user.user.set({
+//     name: 'Mr Test',
+//     email: 'test@gmail.com'
+//   })
+// );

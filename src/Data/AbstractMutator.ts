@@ -16,5 +16,5 @@ export abstract class AbstractMutator<State> implements MutatorInterface<State>
   
   public abstract getAction(...args: any): Action<any>;
   
-  public abstract reduce(state: State, action: ReduxAction): State;
+  public abstract reduce(state: State, action: ReduxAction): void;
 }

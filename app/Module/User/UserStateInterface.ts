@@ -2,7 +2,8 @@
 export interface UserStateInterface
 {
   user: {
-    name: string
+    name: string,
+    email: string
   },
   plan: {
     code: string,

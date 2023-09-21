@@ -28,9 +28,8 @@ export class ClearWhitelist extends AbstractMutator<AdblockStateInterface> imple
     )
   }
   
-  public reduce(state: AdblockStateInterface, action: Action<undefined>): AdblockStateInterface
+  public reduce(state: AdblockStateInterface, action: Action<undefined>): void
   {
     state.userSettings.whitelist = [];
-    return state;
   }
 }

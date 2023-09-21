@@ -28,9 +28,8 @@ export class RemoveFromWhitelist extends AbstractMutator<AdblockStateInterface> 
     )
   }
   
-  public reduce(state: AdblockStateInterface, action: Action<Array<string>>): AdblockStateInterface
+  public reduce(state: AdblockStateInterface, action: Action<Array<string>>): void
   {
     state.userSettings.whitelist = state.userSettings.whitelist.filter((domain) => !action.payload.includes(domain));
-    return state;
   }
 }

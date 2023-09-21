@@ -5,5 +5,5 @@ export interface MutatorInterface<State>
 {
   getType(): string;
   getAction(...args: any): Action<any>;
-  reduce(state: State, action: ReduxAction): State;
+  reduce(state: State, action: ReduxAction): void;
 }

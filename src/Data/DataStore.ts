@@ -3,6 +3,7 @@ import { Treedux } from "../Treedux";
 import { StateNode } from "./StateNode";
 import { MutatorCreators } from "../Type/MutatorCreators";
 import { RecursiveStateNode } from "../Type/RecursiveStateNode";
+import { MutatorInterface } from "./MutatorInterface";
 
 interface DataStoreOptions<State, Mutators extends MutatorCreators<State, State>>
 {
@@ -44,12 +45,44 @@ export class DataStore<StateInterface, Mutators extends MutatorCreators<StateInt
     return this;
   }
   
-  public getSliceOptions(): CreateSliceOptions<any, any, any>
+  public getSliceOptions(): CreateSliceOptions<StateInterface, any, any>
   {
     return {
       name: this.KEY,
       initialState: this.initialState,
-      reducers: {}
+      reducers: this.getReducerMap(this.mutators)
     }
+  }
+  
+  private getReducerMap(mutators: Mutators) // TODO: Add return type
+  {
+    // @ts-ignore // TODO: Fix this
+    const reducerMap = this.hydrateReducers(mutators, {})
+    console.log(this.KEY, reducerMap);
+    return reducerMap;
+  }
+  
+  private hydrateReducers(
+    mutators: MutatorCreators<any, StateInterface>,
+    reducerMap: { [actionType: string]: MutatorInterface<StateInterface>['reduce'] }
+  ) // TODO: Add return type
+  {
+    for (const key in mutators)
+    {
+      const mutatorCreator = mutators[key];
+      
+      if (typeof mutatorCreator === 'object')
+      {
+        this.hydrateReducers(mutatorCreator, reducerMap);
+      }
+      else
+      {
+        if (reducerMap[key]) throw `Cannot add reducer. Action type already registered: ${key}`;
+        const mutator = mutatorCreator(this.treedux);
+        reducerMap[mutator.getType()] = mutator.reduce;
+      }
+    }
+    
+    return reducerMap;
   }
 }
