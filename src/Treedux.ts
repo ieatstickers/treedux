@@ -1,4 +1,4 @@
-import { combineReducers, configureStore, createSlice, Unsubscribe } from "@reduxjs/toolkit";
+import { combineReducers, configureStore, createReducer, createSlice, Unsubscribe } from "@reduxjs/toolkit";
 import { ToolkitStore } from "@reduxjs/toolkit/dist/configureStore";
 import { Action } from "./Data/Action";
 import { DataStore } from "./Data/DataStore";
@@ -29,12 +29,8 @@ export class Treedux<DataStoreMap extends DefaultDataStoreMap = DefaultDataStore
     {
       // Get the data store instance
       const dataStore = this.dataStores[key];
-      // Get the data store slice options
-      const sliceOptions = dataStore.getSliceOptions();
-      // Create the slice
-      const slice = createSlice(sliceOptions);
       // Add reducer the reducer map
-      reducerMap[key] = slice.reducer;
+      reducerMap[key] = createReducer(dataStore.getInitialState(), dataStore.getReducers());
       // Set redux on the data store
       dataStore.setTreedux(this);
     }
@@ -102,11 +98,6 @@ export class Treedux<DataStoreMap extends DefaultDataStoreMap = DefaultDataStore
   public dispatch(...actions: Array<Action<any>>): void
   {
     if (!this.storeInstance) throw "Cannot dispatch action. Redux store has not been initialized.";
-    
-    if (actions.length === 1)
-    {
-      this.storeInstance.dispatch(actions[0].serialize());
-    }
     
     this.storeInstance.dispatch({
       type: DefaultActionEnum.BATCH,

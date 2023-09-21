@@ -45,21 +45,20 @@ export class DataStore<StateInterface, Mutators extends MutatorCreators<StateInt
     return this;
   }
   
-  public getSliceOptions(): CreateSliceOptions<StateInterface, any, any>
+  public getInitialState(): StateInterface
   {
-    return {
-      name: this.KEY,
-      initialState: this.initialState,
-      reducers: this.getReducerMap(this.mutators)
-    }
+    return this.initialState;
+  }
+  
+  public getReducers() // TODO: Add return type
+  {
+    return this.getReducerMap(this.mutators);
   }
   
   private getReducerMap(mutators: Mutators) // TODO: Add return type
   {
     // @ts-ignore // TODO: Fix this
-    const reducerMap = this.hydrateReducers(mutators, {})
-    console.log(this.KEY, reducerMap);
-    return reducerMap;
+    return this.hydrateReducers(mutators, {})
   }
   
   private hydrateReducers(

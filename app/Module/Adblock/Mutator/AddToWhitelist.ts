@@ -30,7 +30,6 @@ export class AddToWhitelist extends AbstractMutator<AdblockStateInterface> imple
   
   public reduce(state: AdblockStateInterface, action: Action<Array<string>>): void
   {
-    console.log('AddToWhitelist.reduce', state, action);
     state.userSettings.whitelist.push(
       // Add any domains that are not already in the whitelist
       ...action.payload.filter((domain) => !state.userSettings.whitelist.includes(domain))
