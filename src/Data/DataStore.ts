@@ -50,21 +50,16 @@ export class DataStore<StateInterface, Mutators extends MutatorCreators<StateInt
     return this.initialState;
   }
   
-  public getReducers() // TODO: Add return type
-  {
-    return this.getReducerMap(this.mutators);
-  }
-  
-  private getReducerMap(mutators: Mutators) // TODO: Add return type
+  public getReducers(): { [actionType: string]: MutatorInterface<StateInterface>['reduce'] }
   {
     // @ts-ignore // TODO: Fix this
-    return this.hydrateReducers(mutators, {})
+    return this.hydrateReducersFromMutators({}, this.mutators)
   }
   
-  private hydrateReducers(
-    mutators: MutatorCreators<any, StateInterface>,
-    reducerMap: { [actionType: string]: MutatorInterface<StateInterface>['reduce'] }
-  ) // TODO: Add return type
+  private hydrateReducersFromMutators(
+    reducerMap: { [actionType: string]: MutatorInterface<StateInterface>['reduce'] },
+    mutators: MutatorCreators<any, StateInterface>
+  ): { [actionType: string]: MutatorInterface<StateInterface>['reduce'] }
   {
     for (const key in mutators)
     {
@@ -72,7 +67,7 @@ export class DataStore<StateInterface, Mutators extends MutatorCreators<StateInt
       
       if (typeof mutatorCreator === 'object')
       {
-        this.hydrateReducers(mutatorCreator, reducerMap);
+        this.hydrateReducersFromMutators(reducerMap, mutatorCreator);
       }
       else
       {
