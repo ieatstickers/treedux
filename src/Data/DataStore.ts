@@ -1,4 +1,3 @@
-import { CreateSliceOptions } from "@reduxjs/toolkit/src/createSlice";
 import { Treedux } from "../Treedux";
 import { StateNode } from "./StateNode";
 import { MutatorCreators } from "../Type/MutatorCreators";
@@ -52,13 +51,12 @@ export class DataStore<StateInterface, Mutators extends MutatorCreators<StateInt
   
   public getReducers(): { [actionType: string]: MutatorInterface<StateInterface>['reduce'] }
   {
-    // @ts-ignore // TODO: Fix this
-    return this.hydrateReducersFromMutators({}, this.mutators)
+    return this.hydrateReducersFromMutators({}, this.mutators);
   }
   
   private hydrateReducersFromMutators(
     reducerMap: { [actionType: string]: MutatorInterface<StateInterface>['reduce'] },
-    mutators: MutatorCreators<any, StateInterface>
+    mutators: MutatorCreators<{}, StateInterface>
   ): { [actionType: string]: MutatorInterface<StateInterface>['reduce'] }
   {
     for (const key in mutators)
