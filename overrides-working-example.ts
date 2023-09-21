@@ -107,7 +107,9 @@ const node: RecursiveStateNode<MyStateInterface, MyStateInterface, typeof mutato
 
 // Your example overrides
 const overrides = {
+  tits: (treedux: Treedux) => new Mutator<MyStateInterface>(),
   a: {
+    test: (treedux: Treedux) => new Mutator<MyStateInterface>(),
     e: {
       add: (treedux: Treedux) => new Mutator<MyStateInterface>(),
       remove: (treedux: Treedux) => new Mutator<MyStateInterface>()
@@ -121,7 +123,7 @@ const getNode = (): RecursiveStateNode<MyStateInterface, MyStateInterface, typeo
 
 
 function closedScope(node: RecursiveStateNode<MyStateInterface, MyStateInterface, typeof overrides>) {
-  const eNode = node.a.e;
+
 }
 let stateNode = getNode();
 

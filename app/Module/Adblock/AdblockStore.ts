@@ -18,9 +18,9 @@ export class AdblockStore
     }
   };
   
-  public static create()
+  public static create(): DataStore<AdblockStateInterface, typeof this.mutators>
   {
-    return  DataStore.create<AdblockStateInterface, typeof this.mutators>(
+    return DataStore.create<AdblockStateInterface, typeof this.mutators>(
       this.KEY,
       {
         initialState: {

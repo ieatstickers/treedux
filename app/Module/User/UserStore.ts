@@ -5,7 +5,7 @@ export class UserStore
 {
   public static KEY: 'user' = 'user';
   
-  public static create()
+  public static create(): DataStore<UserStateInterface>
   {
     return DataStore.create<UserStateInterface>(
       this.KEY,

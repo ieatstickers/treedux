@@ -6,19 +6,19 @@ import { RecursiveStateNode } from "../Type/RecursiveStateNode";
 import { MutatorCreators } from "../Type/MutatorCreators";
 import { StateNodeInterface } from "../Type/StateNodeInterface";
 
-type StateNodeOptions<T> = {
+type StateNodeOptions<T, StateInterface> = {
   keyPath: Array<string>,
-  mutators?: MutatorCreators<T>
+  mutators?: MutatorCreators<T, StateInterface>
 }
 
-export class StateNode<T, Options extends StateNodeOptions<T> = StateNodeOptions<T>> implements StateNodeInterface<T>
+export class StateNode<StateNodeType, StateInterface, Options extends StateNodeOptions<StateNodeType, StateInterface> = StateNodeOptions<StateNodeType, StateInterface>> implements StateNodeInterface<StateNodeType>
 {
   private readonly treedux: Treedux;
-  private lastKnownValue: T;
+  private lastKnownValue: StateNodeType;
   private readonly keyPath: Array<string> = [];
   
   protected constructor(
-    options: StateNodeOptions<T>,
+    options: StateNodeOptions<StateNodeType, StateInterface>,
     treedux: Treedux
   )
   {
@@ -26,12 +26,12 @@ export class StateNode<T, Options extends StateNodeOptions<T> = StateNodeOptions
     this.keyPath = options.keyPath;
   }
   
-  public static create<T, Options extends StateNodeOptions<T> = StateNodeOptions<T>>(options: StateNodeOptions<T>, treedux: Treedux): RecursiveStateNode<T, Options['mutators']>
+  public static create<StateNodeType, StateInterface, Options extends StateNodeOptions<StateNodeType, StateInterface> = StateNodeOptions<StateNodeType, StateInterface>>(options: StateNodeOptions<StateNodeType, StateInterface>, treedux: Treedux): RecursiveStateNode<StateNodeType, StateInterface, Options['mutators']>
   {
-    return (new StateNode<T, Options>(options, treedux)).createProxy();
+    return (new StateNode<StateNodeType, StateInterface, Options>(options, treedux)).createProxy();
   }
   
-  public get(): T
+  public get(): StateNodeType
   {
     const keys = [ ...this.keyPath ];
     const state = this.treedux.getState();
@@ -61,7 +61,7 @@ export class StateNode<T, Options extends StateNodeOptions<T> = StateNodeOptions
     return this.lastKnownValue;
   }
   
-  public set(value: T): Action<{ keyPath: Array<string>, value: T }>
+  public set(value: StateNodeType): Action<{ keyPath: Array<string>, value: StateNodeType }>
   {
     return Action.create(
       {
@@ -72,7 +72,7 @@ export class StateNode<T, Options extends StateNodeOptions<T> = StateNodeOptions
     );
   }
   
-  public subscribe(callback: (data: T) => void): () => void
+  public subscribe(callback: (data: StateNodeType) => void): () => void
   {
     let currentValue = this.lastKnownValue;
     
@@ -84,13 +84,13 @@ export class StateNode<T, Options extends StateNodeOptions<T> = StateNodeOptions
     })
   }
   
-  public use(): { value: T, set: (value: T) => Action<{ keyPath: Array<string>, value: T }> }
+  public use(): { value: StateNodeType, set: (value: StateNodeType) => Action<{ keyPath: Array<string>, value: StateNodeType }> }
   {
     // TODO: Add useState hooks
     return { value: this.get(), set: this.set.bind(this) };
   }
   
-  private createProxy(): RecursiveStateNode<T, Options['mutators']>
+  private createProxy(): RecursiveStateNode<StateNodeType, StateInterface, Options['mutators']>
   {
     return new Proxy(this, {
       get(target, property: string | symbol)
@@ -123,6 +123,6 @@ export class StateNode<T, Options extends StateNodeOptions<T> = StateNodeOptions
         // Default to returning the property (even if it doesn't exist)
         return target[property];
       },
-    }) as unknown as RecursiveStateNode<T, Options['mutators']>
+    }) as unknown as RecursiveStateNode<StateNodeType, StateInterface, Options['mutators']>
   }
 }
