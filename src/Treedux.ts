@@ -4,6 +4,7 @@ import { Action } from "./Data/Action";
 import { DataStore } from "./Data/DataStore";
 import { DefaultActionEnum } from "./Enum/DefaultActionEnum";
 import { Objects } from "./Utility/Objects";
+import { Hooks } from "./Type/Hooks";
 
 // Default map of data store key to DataStore instance
 type DefaultDataStoreMap = { [key: string]: DataStore<any, any> };
@@ -17,12 +18,20 @@ export class Treedux<DataStoreMap extends DefaultDataStoreMap = DefaultDataStore
 {
   private dataStores: DataStoreMap;
   private storeInstance: ToolkitStore;
+  private readonly hooks: Hooks;
   
-  protected constructor(dataStores: DataStoreMap, options?: { initialState?: any })
+  protected constructor(
+    dataStores: DataStoreMap,
+    options?: {
+      initialState?: any,
+      hooks?: Hooks
+    }
+  )
   {
     this.dataStores = dataStores;
     options = options || {};
     const reducerMap: Partial<ReducerMap<DataStoreMap>> = {};
+    this.hooks = options.hooks;
     
     // For each data store
     for (const key in this.dataStores)
@@ -33,13 +42,15 @@ export class Treedux<DataStoreMap extends DefaultDataStoreMap = DefaultDataStore
       reducerMap[key] = createReducer(dataStore.getInitialState(), dataStore.getReducers());
       // Set redux on the data store
       dataStore.setTreedux(this);
+      // Set hooks on the data store
+      dataStore.setHooks(this.hooks);
     }
     
     // Combine all data store reducers to create app reducer
     const appReducer = combineReducers(reducerMap);
     
     // Define root reducer
-    const rootReducer = (state, action) => {
+    const rootReducer = (state: any, action: any) => {
       
       if (action.type === DefaultActionEnum.BATCH)
       {
@@ -62,7 +73,7 @@ export class Treedux<DataStoreMap extends DefaultDataStoreMap = DefaultDataStore
   
   public static init<DataStoreMap extends DefaultDataStoreMap>(
     dataStores: DataStoreMap,
-    options?: { initialState?: any }
+    options?: { initialState?: any, hooks?: Hooks }
   ): Treedux<DataStoreMap>
   {
     return new Treedux(dataStores, options);

@@ -3,7 +3,7 @@ module.exports = {
   mode:    'development',
   // Entry
   entry: {
-    index: './app/index.ts'
+    index: './app/index.tsx'
   },
   // Output
   output:  {

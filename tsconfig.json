@@ -6,7 +6,8 @@
     "lib": [
       "dom",
       "es2015"
-    ]
+    ],
+    "jsx": "react"
   },
   "exclude": [
     "node_modules",
@@ -14,6 +15,6 @@
   ],
   "include": [],
   "files": [
-    "app/index.ts"
+    "app/index.tsx"
   ]
 }

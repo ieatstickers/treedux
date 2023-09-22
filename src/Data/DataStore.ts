@@ -3,6 +3,7 @@ import { StateNode } from "./StateNode";
 import { MutatorCreators } from "../Type/MutatorCreators";
 import { RecursiveStateNode } from "../Type/RecursiveStateNode";
 import { MutatorInterface } from "./MutatorInterface";
+import { Hooks } from "../Type/Hooks";
 
 interface DataStoreOptions<State, Mutators extends MutatorCreators<State, State>>
 {
@@ -16,6 +17,7 @@ export class DataStore<StateInterface, Mutators extends MutatorCreators<StateInt
   private readonly initialState: StateInterface;
   private readonly mutators: Mutators;
   private treedux: Treedux;
+  private hooks: Hooks;
   
   public constructor(key: string, options: DataStoreOptions<StateInterface, Mutators>)
   {
@@ -34,13 +36,19 @@ export class DataStore<StateInterface, Mutators extends MutatorCreators<StateInt
   
   public get state(): RecursiveStateNode<StateInterface, StateInterface, Mutators>
   {
-    const options = { keyPath: [this.KEY], mutators: this.mutators };
+    const options = { keyPath: [this.KEY], mutators: this.mutators, hooks: this.hooks };
     return StateNode.create<StateInterface, StateInterface, typeof options>(options, this.treedux);
   }
   
   public setTreedux(treedux: Treedux): this
   {
     this.treedux = treedux;
+    return this;
+  }
+  
+  public setHooks(hooks: Hooks): this
+  {
+    this.hooks = hooks;
     return this;
   }
   
