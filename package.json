@@ -10,6 +10,9 @@
   "files": [
     "dist/**/*"
   ],
+  "scripts": {
+    "build": "webpack"
+  },
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.5"
   },
