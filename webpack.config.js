@@ -8,7 +8,10 @@ module.exports = {
   // Output
   output:  {
     filename: '[name].min.js',
-    path:     `${__dirname}/dist`
+    path:     `${__dirname}/dist`,
+    library: {
+      type: "umd"
+    }
   },
   resolve: {
     extensions: [".ts", ".tsx", ".js", ".json"]
