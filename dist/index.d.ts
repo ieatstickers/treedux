@@ -4,4 +4,3 @@ export { AbstractMutator } from './src/Data/AbstractMutator';
 export { Action } from './src/Data/Action';
 export { StateNode } from './src/Data/StateNode';
 export { RecursiveStateNode } from './src/Type/RecursiveStateNode';
-export { Test } from './src/Test';
