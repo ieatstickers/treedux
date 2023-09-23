@@ -1,6 +1,6 @@
 module.exports = {
   plugins: [],
-  mode:    'development',
+  mode:    process.env.ENV === 'dev' ? 'development' : 'production',
   // Entry
   entry: {
     index: './index.ts'
@@ -22,12 +22,7 @@ module.exports = {
       // TypeScript
       {
         test: /\.(ts|tsx)$/,
-        use:  [
-          {
-            loader:  'ts-loader',
-            options: { allowTsInNodeModules: true }
-          }
-        ]
+        use:  [{ loader:  'ts-loader' }]
       }
     ]
   }
