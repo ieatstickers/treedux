@@ -3,12 +3,12 @@ module.exports = {
   mode:    'development',
   // Entry
   entry: {
-    index: './app/index.tsx'
+    index: './index.ts'
   },
   // Output
   output:  {
-    filename: 'entry/[name]/[name].min.js',
-    path:     `${__dirname}/public`
+    filename: '[name].min.js',
+    path:     `${__dirname}/dist`
   },
   resolve: {
     extensions: [".ts", ".tsx", ".js", ".json"]

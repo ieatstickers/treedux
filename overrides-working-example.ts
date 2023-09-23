@@ -1,7 +1,19 @@
 // Your basic methods for each state node
 import { Action } from "./src/Data/Action";
 import { Action as ReduxAction } from "@reduxjs/toolkit";
-import { MyStateInterface } from "./MyStateInterface";
+
+// Example state structure
+type MyStateInterface = {
+  a: {
+    b: {
+      c: string
+    },
+    d: string,
+    e: Array<number>
+  },
+  f: number
+}
+
 
 class Treedux {
 
