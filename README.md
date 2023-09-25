@@ -35,6 +35,11 @@ To get started, you'll need to create one or more data stores and initialise Tre
 ```typescript
 import { Treedux, DataStore, Action } from 'treedux';
 
+enum UserPreferenceEnum {
+  DARK_MODE = "dark_mode",
+  SHOW_NOTIFICATIONS = "show_notifications"
+}
+
 // Define the interface for an example data store
 interface UserStore
 {
@@ -42,7 +47,7 @@ interface UserStore
     name: string,
     age: number
   },
-  preferences: Array<"dark_mode" | "show_notifications">
+  preferences: Array<UserPreferenceEnum>
 }
 
 // Create the data store, passing in a unique key/name and the initial state
@@ -56,7 +61,7 @@ const userStore = DataStore.create<UserStore>(
         age:  32
       },
       preferences: [
-        "show_notifications"
+        UserPreferenceEnum.SHOW_NOTIFICATIONS
       ]
     }
   }
