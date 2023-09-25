@@ -7,7 +7,7 @@ Treedux is a lightweight wrapper for Redux providing fully type-hinted state tre
 - Uses TypeScript generics to provide easy traversal of the full state tree out of the box
 - Default methods available on every tree node to get, set and subscribe to changes without writing any boilerplate code or reducers
 - Ability to override any node in the state tree to add custom reducers and action creators (known as Mutators)
-- Full support for React hooks to further reduce boilerplate when used with functional components
+- Full support for React hooks to further reduce boilerplate code when used with functional components
 
 ## Rationale
 
