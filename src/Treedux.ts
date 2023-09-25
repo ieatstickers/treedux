@@ -38,10 +38,10 @@ export class Treedux<DataStoreMap extends DefaultDataStoreMap = DefaultDataStore
     {
       // Get the data store instance
       const dataStore = this.dataStores[key];
-      // Add reducer the reducer map
-      reducerMap[key] = createReducer(dataStore.getInitialState(), dataStore.getReducers());
       // Set redux on the data store
       dataStore.setTreedux(this);
+      // Add reducer the reducer map
+      reducerMap[key] = createReducer(dataStore.getInitialState(), dataStore.getReducers());
       // Set hooks on the data store
       dataStore.setHooks(this.hooks);
     }
