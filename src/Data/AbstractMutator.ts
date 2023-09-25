@@ -7,7 +7,7 @@ export abstract class AbstractMutator<State> implements MutatorInterface<State>
 {
   protected treedux: Treedux;
   
-  protected constructor(treedux: Treedux)
+  public constructor(treedux: Treedux)
   {
     this.treedux = treedux;
   }
