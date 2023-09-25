@@ -2,14 +2,20 @@
   "name": "treedux",
   "version": "1.0.0",
   "description": "Lightweight wrapper for Redux providing fully type-hinted state tree traversal out of the box",
-  "main": "index.ts",
   "author": "Mike Burke",
   "license": "MIT",
   "private": true,
-  "dependencies": {
-    "@reduxjs/toolkit": "^1.9.5"
+  "main": "dist/index.min.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/**/*"
+  ],
+  "scripts": {
+    "build": "webpack"
   },
+  "dependencies": {},
   "devDependencies": {
+    "@reduxjs/toolkit": "^1.9.5",
     "ts-loader": "^9.4.2",
     "typescript": "^5.0.4",
     "webpack": "^5.82.0",

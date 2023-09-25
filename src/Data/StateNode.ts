@@ -2,62 +2,45 @@ import { DefaultActionEnum } from "../Enum/DefaultActionEnum";
 import { Treedux } from "../Treedux";
 import { Objects } from "../Utility/Objects";
 import { Action } from "./Action";
+import { RecursiveStateNode } from "../Type/RecursiveStateNode";
+import { MutatorCreators } from "../Type/MutatorCreators";
+import { StateNodeInterface } from "../Type/StateNodeInterface";
+import { MutatorInterface } from "./MutatorInterface";
+import { MutatorMethods } from "../Type/MutatorMethods";
+import { Hooks } from "../Type/Hooks";
 
-type StateNodeOptions<T> = {
-  keyPath?: Array<string>;
-  getter?: () => T;
+type StateNodeOptions<T, StateInterface> = {
+  keyPath: Array<string>,
+  mutators?: MutatorCreators<T, StateInterface>,
+  hooks?: Hooks
 }
 
-type OwnKeys<T> = {
-  [K in keyof T]: (T extends Record<string, any> ? K extends keyof T ? K : never : never);
-}[keyof T];
-
-type RecursiveStateNode<T> = T extends object
-  ? StateNode<T> & { [K in OwnKeys<T>]: RecursiveStateNode<T[K]> }
-  : StateNode<T>;
-
-type OptionsWithGetter<T> = Extract<StateNodeOptions<T>, { getter: () => T }>;
-
-export class StateNode<T>
+export class StateNode<StateNodeType, StateInterface, Options extends StateNodeOptions<StateNodeType, StateInterface> = StateNodeOptions<StateNodeType, StateInterface>> implements StateNodeInterface<StateNodeType, MutatorMethods<StateInterface, Options['mutators']>>
 {
   private readonly treedux: Treedux;
-  private lastKnownValue: T;
+  private lastKnownValue: StateNodeType;
   private readonly keyPath: Array<string> = [];
-  private readonly getter: () => T;
+  private readonly mutators: Options['mutators'];
+  private readonly hooks: Hooks;
   
   protected constructor(
-    options: StateNodeOptions<T>,
+    options: StateNodeOptions<StateNodeType, StateInterface>,
     treedux: Treedux
   )
   {
-    if (
-      // If neither keyPath nor getter are set
-      (!options.keyPath && !options.getter)
-      // Or if both keyPath and getter are set
-      || (options.keyPath && options.getter)
-    )
-    {
-      throw "StateNodeOptions must contain 'keyPath' OR 'getter'"
-    }
-    
     this.treedux = treedux;
-    if (options.keyPath) this.keyPath = options.keyPath;
-    if (options.getter) this.getter = options.getter;
+    this.keyPath = options.keyPath;
+    this.mutators = options.mutators;
+    this.hooks = options.hooks;
   }
   
-  public static create<T, Options extends StateNodeOptions<T> = StateNodeOptions<T>>(options: StateNodeOptions<T>, treedux: Treedux): Options extends OptionsWithGetter<T> ? StateNode<T> : RecursiveStateNode<T>
+  public static create<StateNodeType, StateInterface, Options extends StateNodeOptions<StateNodeType, StateInterface> = StateNodeOptions<StateNodeType, StateInterface>>(options: StateNodeOptions<StateNodeType, StateInterface>, treedux: Treedux): RecursiveStateNode<StateNodeType, StateInterface, Options['mutators']>
   {
-    return (new StateNode<T>(options, treedux)).createProxy();
+    return (new StateNode<StateNodeType, StateInterface, Options>(options, treedux)).createProxy();
   }
   
-  public get(): T
+  public get(): StateNodeType
   {
-    if (this.getter)
-    {
-      this.lastKnownValue = this.getter();
-      return this.lastKnownValue;
-    }
-    
     const keys = [ ...this.keyPath ];
     const state = this.treedux.getState();
     
@@ -86,18 +69,18 @@ export class StateNode<T>
     return this.lastKnownValue;
   }
   
-  public set(value: T): Action
+  public set(value: StateNodeType): Action<{ keyPath: Array<string>, value: StateNodeType }>
   {
     return Action.create(
       {
         type: DefaultActionEnum.SET_BY_KEY_PATH,
         payload: { keyPath: this.keyPath, value: value }
       },
-      this.treedux.dispatch.bind(this.treedux)
+      this.treedux
     );
   }
   
-  public subscribe(callback: (data: T) => void): () => void
+  public subscribe(callback: (data: StateNodeType) => void): () => void
   {
     let currentValue = this.lastKnownValue;
     
@@ -109,45 +92,68 @@ export class StateNode<T>
     })
   }
   
-  public use(): { value: T, set: (value: T) => Action }
+  public use(): { value: StateNodeType, set: (value: StateNodeType) => Action<{ keyPath: Array<string>, value: StateNodeType }> } & MutatorMethods<StateInterface, Options['mutators']>
   {
-    // TODO: Add useState hooks
-    return { value: this.get(), set: this.set.bind(this) };
+    if (!this.hooks) throw "Cannot use StateNode.use() - hooks have not been set.";
+    
+    const [ value, setValue ] = this.hooks.useState(this.get());
+    this.hooks.useEffect(() => this.subscribe(setValue));
+    
+    return {
+      value: value,
+      set: this.set.bind(this),
+      ...this.getMutatorMethods()
+    };
   }
   
-  private createProxy(): RecursiveStateNode<T>
+  private createProxy(): RecursiveStateNode<StateNodeType, StateInterface, Options['mutators']>
   {
     return new Proxy(this, {
-      get(target, property: string | symbol)
+      get(self, property: string | symbol)
       {
-        const currentValue = target.get();
+        if (typeof property !== 'string') return null;
         
-        // If accessing a property of the data object, return a new StateNode
-        if (
-          typeof property === 'string'
-          && Objects.isObject(currentValue)
-          && property in currentValue
-        )
-        {
-          // const value = currentValue[prop as keyof T] as T;
-          
-          return StateNode.create(
-            {
-              keyPath: target.keyPath.concat(property)
-            },
-            target.treedux
-          );
-          
-        }
-        // Else if accessing a method of the StateNode, bind it to the StateNode
-        else if (typeof target[property] === 'function')
-        {
-          return target[property].bind(target);
-        }
+        const mutatorMethod = self.getMutatorMethod(property);
         
-        // Default to returning the property (even if it doesn't exist)
-        return target[property];
+        // If mutator method exists, return it
+        if (mutatorMethod) return mutatorMethod;
+        
+        // If property is a default method, return it
+        if (typeof self[property] === 'function') return self[property].bind(self);
+        
+        // Default to returning a new StateNode
+        return StateNode.create(
+          {
+            keyPath: self.keyPath.concat(property),
+            mutators: self.mutators && self.mutators[property] ? self.mutators[property] : {},
+            hooks: self.hooks
+          },
+          self.treedux
+        );
       },
-    }) as unknown as RecursiveStateNode<T>
+    }) as unknown as RecursiveStateNode<StateNodeType, StateInterface, Options['mutators']>
+  }
+  
+  private getMutatorMethod(methodName: string): MutatorInterface<any>['getAction']
+  {
+    // If mutator method doesn't exist, return null
+    if (!this.mutators || !this.mutators[methodName] || typeof this.mutators[methodName] !== 'function') return null;
+    const mutatorCreator = this.mutators[methodName];
+    const mutator = mutatorCreator(this.treedux);
+    return mutator.getAction.bind(mutator);
+  }
+  
+  private getMutatorMethods(): MutatorMethods<StateInterface, Options['mutators']>
+  {
+    const mutatorCreators = this.mutators || {};
+    const mutatorMethods = {} as MutatorMethods<StateInterface, Options['mutators']>;
+    
+    for (const methodName in mutatorCreators)
+    {
+      if (typeof mutatorCreators[methodName] !== 'function') continue;
+      mutatorMethods[methodName] = this.getMutatorMethod(methodName);
+    }
+    
+    return mutatorMethods;
   }
 }
