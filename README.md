@@ -11,7 +11,7 @@ Treedux is a lightweight wrapper for Redux providing fully type-hinted state tre
 
 ## Rationale
 
-To modify the application state, Redux requires you to write a reducer to perform the update. The vast majority of the reducers we write are incredibly simple and do nothing more than directly set the value of a particular property with a new value. This logic is often duplicated for most of the properties in each data store, with the only difference being the name of the property it's responsible for updating. This leads to a lot of duplicated boilerplate code to do something very simple.
+To modify the application state, Redux requires you to write a reducer to perform the update. The vast majority of the reducers we write are incredibly simple and do nothing more than directly set the value of a particular property with a new value. This logic is often duplicated for most of the properties in each data store, with the only difference being the name of the property it's responsible for updating. This leads to a lot of duplicated boilerplate code to perform a series of very simple operations.
 
 Treedux is designed to be the antidote to this. Out of the box, it allows you to traverse through your application state tree (fully type-hinted using TypeScript generics) and at each tree node get the current value, update the value with a new one or subscribe to changes, all without writing a single reducer. This allows you to get up and running super quickly with minimal code required.
 
