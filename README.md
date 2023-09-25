@@ -28,7 +28,7 @@ Treedux isn't available on npm yet but you can install it directly from GitHub b
 }
 ```
 
-## Basic Usage
+## Example Usage
 
 ### 1. Creating a Data Store
 
@@ -176,6 +176,7 @@ Now we can update our `UserStore` to register the mutator when the store is crea
 // UserStore.ts
 
 import { DataStore } from 'treedux';
+import { AddPreferenceMutator } from './AddPreferenceMutator';
 
 export enum UserPreferenceEnum {
   DARK_MODE = "dark_mode",
@@ -199,7 +200,7 @@ export class UserStore
   // an argument and returns an instance of the mutator
   private static readonly mutators = {
     preferences: {
-      add: (treedux: Treedux) => new AddToWhitelist(treedux)
+      add: (treedux: Treedux) => new AddPreferenceMutator(treedux)
     },
   };
   
@@ -242,7 +243,6 @@ treedux
 Each node on the state tree also provides a React hook through the `use` method that exposes the current value, the `set` method and any mutator methods like the `add` method in the previous example. The hook will automatically unsubscribe when the component unmounts.
 
 ```tsx
-
 function ExampleComponent()
 {
   const { value: user, set: setUser } = treedux.state.user.user.use();
@@ -266,4 +266,28 @@ function ExampleComponent()
   </div>;
 }
 
+```
+In order for the `use` method to work properly, you'll need to give Treedux the `useState` and `useEffect` hooks from the version of React you're using through the options object when initialising Treedux:
+
+```typescript
+// index.ts
+
+import { Treedux } from "treedux";
+import { UserStore } from "./UserStore";
+import { useState, useEffect } from "react";
+
+const treedux = Treedux.init(
+  // Data store map
+  {
+    [UserStore.KEY]: UserStore.create()
+  },
+  // Options
+  {
+    // initialState: { ... } // You can optionally pass in the initial state of your application here
+    hooks: {
+      useState:  useState,
+      useEffect: useEffect
+    }
+  }
+);
 ```
