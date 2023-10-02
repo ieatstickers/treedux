@@ -7,11 +7,12 @@ import { MutatorCreators } from "../Type/MutatorCreators";
 import { StateNodeInterface } from "../Type/StateNodeInterface";
 import { MutatorInterface } from "./MutatorInterface";
 import { MutatorMethods } from "../Type/MutatorMethods";
+const reactPackageName: string = 'react';
 let React: typeof import("react");
 
 try
 {
-  React = require('react');
+  React = require(reactPackageName);
 }
 catch (e)
 {
