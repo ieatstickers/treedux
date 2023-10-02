@@ -1,6 +1,6 @@
 
-declare const UNIQUE_SYMBOL: unique symbol;
-type Destructor = () => void | { [UNIQUE_SYMBOL]: never };
+declare const UNDEFINED_VOID_ONLY: unique symbol;
+type Destructor = () => void | { [UNDEFINED_VOID_ONLY]: never };
 type EffectCallback = () => void | Destructor;
 type DependencyList = ReadonlyArray<any>;
 
