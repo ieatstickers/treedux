@@ -9,10 +9,14 @@ import { MutatorInterface } from "./MutatorInterface";
 import { MutatorMethods } from "../Type/MutatorMethods";
 let React: typeof import("react");
 
-try {
+try
+{
   React = require('react');
 }
-catch (e) {}
+catch (e)
+{
+  React = null;
+}
 
 type StateNodeOptions<T, StateInterface> = {
   keyPath: Array<string>,
