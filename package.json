@@ -14,7 +14,16 @@
     "build": "webpack"
   },
   "dependencies": {},
+  "peerDependencies": {
+    "react": "^16.8.0"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    }
+  },
   "devDependencies": {
+    "@types/react": "^16.8.0",
     "@reduxjs/toolkit": "^1.9.5",
     "ts-loader": "^9.4.2",
     "typescript": "^5.0.4",

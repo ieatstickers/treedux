@@ -16,6 +16,14 @@ module.exports = {
   resolve: {
     extensions: [".ts", ".tsx", ".js", ".json"]
   },
+  externals: {
+    react: {
+      commonjs: "react",
+      commonjs2: "react",
+      import: "react",
+      umd: "react"
+    }
+  },
   // Loaders
   module: {
     rules: [
