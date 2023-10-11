@@ -1,4 +1,5 @@
 import { Unsubscribe } from "@reduxjs/toolkit";
+import { ToolkitStore } from "@reduxjs/toolkit/dist/configureStore";
 import { Action } from "./Data/Action";
 import { DataStore } from "./Data/DataStore";
 import { Hooks } from "./Type/Hooks";
@@ -6,8 +7,8 @@ type DefaultDataStoreMap = {
     [key: string]: DataStore<any, any>;
 };
 export declare class Treedux<DataStoreMap extends DefaultDataStoreMap = DefaultDataStoreMap> {
+    protected storeInstance: ToolkitStore;
     private dataStores;
-    private storeInstance;
     private readonly hooks;
     protected constructor(dataStores: DataStoreMap, options?: {
         initialState?: any;
