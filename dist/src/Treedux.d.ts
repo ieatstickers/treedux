@@ -8,7 +8,7 @@ type DefaultDataStoreMap = {
 };
 export declare class Treedux<DataStoreMap extends DefaultDataStoreMap = DefaultDataStoreMap> {
     protected storeInstance: ToolkitStore;
-    private dataStores;
+    private readonly dataStores;
     private readonly hooks;
     protected constructor(dataStores: DataStoreMap, options?: {
         initialState?: any;

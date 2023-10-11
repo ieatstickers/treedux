@@ -17,7 +17,7 @@ type ReducerMap<DataStoreMap extends DefaultDataStoreMap> = {
 export class Treedux<DataStoreMap extends DefaultDataStoreMap = DefaultDataStoreMap>
 {
   protected storeInstance: ToolkitStore;
-  private dataStores: DataStoreMap;
+  private readonly dataStores: DataStoreMap;
   private readonly hooks: Hooks;
   
   protected constructor(
