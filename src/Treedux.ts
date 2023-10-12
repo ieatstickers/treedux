@@ -16,7 +16,7 @@ type ReducerMap<DataStoreMap extends DefaultDataStoreMap> = {
 
 export class Treedux<DataStoreMap extends DefaultDataStoreMap = DefaultDataStoreMap>
 {
-  protected storeInstance: ToolkitStore;
+  private readonly storeInstance: ToolkitStore;
   private readonly dataStores: DataStoreMap;
   private readonly hooks: Hooks;
   
@@ -100,10 +100,10 @@ export class Treedux<DataStoreMap extends DefaultDataStoreMap = DefaultDataStore
     return this.storeInstance.getState();
   }
   
-  public subscribe(callback: () => void): Unsubscribe
+  public subscribe(listener: () => void): Unsubscribe
   {
     if (!this.storeInstance) throw "Cannot subscribe to store. Redux store has not been initialized.";
-    return this.storeInstance.subscribe(callback);
+    return this.storeInstance.subscribe(listener);
   }
   
   public dispatch(...actions: Array<Action<any>>): void
