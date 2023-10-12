@@ -1,13 +1,11 @@
 import { combineReducers, configureStore, createReducer, createSlice, Unsubscribe } from "@reduxjs/toolkit";
 import { ToolkitStore } from "@reduxjs/toolkit/dist/configureStore";
 import { Action } from "./Data/Action";
-import { DataStore } from "./Data/DataStore";
 import { DefaultActionEnum } from "./Enum/DefaultActionEnum";
 import { Objects } from "./Utility/Objects";
 import { Hooks } from "./Type/Hooks";
+import { DefaultDataStoreMap } from "./Type/DefaultDataStoreMap";
 
-// Default map of data store key to DataStore instance
-type DefaultDataStoreMap = { [key: string]: DataStore<any, any> };
 
 // Reducer map for Redux store
 type ReducerMap<DataStoreMap extends DefaultDataStoreMap> = {
