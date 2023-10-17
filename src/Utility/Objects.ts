@@ -30,7 +30,15 @@ export class Objects
       // If we're at the last key in the path, set the value and exit the loop.
       if (path.length === 0)
       {
-        currentObj[key] = value;
+        if (value === undefined)
+        {
+          delete currentObj[key];
+        }
+        else
+        {
+          currentObj[key] = value;
+        }
+        
         break;
       }
       
