@@ -42,9 +42,11 @@ export class Objects
         break;
       }
       
-      // If the current object doesn't have the key, create an empty object.
+      // If the current object doesn't have the key, create an empty object (unless we are trying to delete a key by setting it to undefined)
       if (!currentObj[key])
       {
+        if (typeof value == "undefined") return newObject;
+        
         currentObj[key] = {};
       }
       
