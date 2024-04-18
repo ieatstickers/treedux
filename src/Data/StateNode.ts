@@ -137,7 +137,7 @@ export class StateNode<StateNodeType, StateInterface, Options extends StateNodeO
   private getMutatorMethod(methodName: string): MutatorInterface<any>['getAction']
   {
     // If mutator method doesn't exist, return null
-    if (!this.mutators || !this.mutators[methodName] || typeof this.mutators[methodName] !== 'function') return null;
+    if (!this.mutators || !this.mutators.hasOwnProperty(methodName) || typeof this.mutators[methodName] !== 'function') return null;
     const mutatorCreator = this.mutators[methodName];
     const mutator = mutatorCreator(this.treedux);
     return mutator.getAction.bind(mutator);
@@ -150,7 +150,6 @@ export class StateNode<StateNodeType, StateInterface, Options extends StateNodeO
     
     for (const methodName in mutatorCreators)
     {
-      if (typeof mutatorCreators[methodName] !== 'function') continue;
       mutatorMethods[methodName] = this.getMutatorMethod(methodName);
     }
     
