@@ -6,7 +6,6 @@ import { Objects } from "./Utility/Objects";
 import { Hooks } from "./Type/Hooks";
 import { DefaultDataStoreMap } from "./Type/DefaultDataStoreMap";
 
-
 // Reducer map for Redux store
 type ReducerMap<DataStoreMap extends DefaultDataStoreMap> = {
   [K in keyof DataStoreMap]: ReturnType<typeof createSlice>['reducer'];
@@ -38,8 +37,10 @@ export class Treedux<DataStoreMap extends DefaultDataStoreMap = DefaultDataStore
       const dataStore = this.dataStores[key];
       // Set redux on the data store
       dataStore.setTreedux(this);
-      // Add reducer the reducer map
-      reducerMap[key] = createReducer(dataStore.getInitialState(), dataStore.getReducers());
+      // Add reducer the reducer maps
+      reducerMap[key] = createReducer(dataStore.getInitialState(), (builder) => {
+        Object.entries(dataStore.getReducers()).forEach(([actionType, reducer]) => builder.addCase(actionType, reducer));
+      });
       // Set hooks on the data store
       dataStore.setHooks(this.hooks);
     }
