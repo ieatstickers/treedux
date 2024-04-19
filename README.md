@@ -84,7 +84,7 @@ export class UserStore
 ```typescript
 // index.ts
 
-import { Treedux } from "treedux";
+import { Treedux } from "treeduxjs";
 import { UserStore } from "./UserStore";
 
 const treedux = Treedux.init(
@@ -142,7 +142,7 @@ The `reduce` method contains the logic that performs the update to the state. Th
 ```typescript
 // AddPreferenceMutator.ts
 
-import { AbstractMutator, Action } from "treedux";
+import { AbstractMutator, Action } from "treeduxjs";
 import { UserStoreInterface } from "./UserStore";
 
 class AddPreferenceMutator extends AbstractMutator<UserStoreInterface>
@@ -274,7 +274,7 @@ In order for the `use` method to work properly, you'll need to give Treedux the 
 ```typescript
 // index.ts
 
-import { Treedux } from "treedux";
+import { Treedux } from "treeduxjs";
 import { UserStore } from "./UserStore";
 import { useState, useEffect } from "react";
 
