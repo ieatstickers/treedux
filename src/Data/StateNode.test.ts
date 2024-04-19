@@ -48,16 +48,11 @@ describe("StateNode", () => {
       const treedux = { bind: jest.fn() } as any;
       const keyPath = ['example', 'path'];
       const mutators = {};
-      const hooks = {
-        useState: jest.fn(),
-        useEffect: jest.fn()
-      }
-      const stateNode = new TestStateNode({ keyPath: keyPath, mutators: mutators, hooks: hooks }, treedux);
+      const stateNode = new TestStateNode({ keyPath: keyPath, mutators: mutators }, treedux);
 
       expect(stateNode['treedux']).toBe(treedux);
       expect(stateNode['keyPath']).toBe(keyPath);
       expect(stateNode['mutators']).toBe(mutators);
-      expect(stateNode['hooks']).toBe(hooks);
     });
 
   });
@@ -236,157 +231,6 @@ describe("StateNode", () => {
 
   });
   
-  describe("use", () => {
-    
-    afterEach(() => {
-      jest.useRealTimers();
-    })
-    
-    it("throws an error if the hook is not defined", () => {
-
-      const treedux = {} as any;
-      const keyPath = ['example', 'path'];
-      const stateNode = StateNode.create({ keyPath: keyPath }, treedux);
-      expect(() => stateNode.use()).toThrow('Cannot use StateNode.use() - hooks have not been set.');
-    });
-    
-    
-    it('calls setValue when the subscribed value changes', async () => {
-
-      jest.useFakeTimers();
-
-      const mockSetValue = jest.fn();
-
-      const treedux: any = {
-        getState: jest.fn(),
-        subscribe: jest.fn(callback => {
-          setTimeout(() => callback(), 100); // Simulate a state change that should trigger the subscription
-          return () => {};
-        })
-      };
-
-      const hooks: any = {
-        useState: () => [null, mockSetValue],
-        useEffect: (effect) => effect(),
-      };
-
-      const stateNode = new TestStateNode({ keyPath: ['path'], hooks: hooks }, treedux);
-      stateNode.get = jest.fn().mockReturnValue('new value'); // .get() will be called in .use() to figure out if the value has changed
-      
-      stateNode.use();
-      
-      jest.runAllTimers();
-
-      expect(mockSetValue).toHaveBeenCalledWith('new value');
-    });
-    
-    it("returns the correct value without mutators", () => {
-      
-      const treedux = {
-        getState: jest.fn().mockReturnValue({ example: { path: 'hookValue' }} )
-      } as any;
-      const keyPath = ['example', 'path'];
-      const hooks = {
-        useState: jest.fn().mockReturnValue([ 'hookValue', jest.fn() ]),
-        useEffect: jest.fn(),
-      }
-      
-      interface ExampleStateInterface
-      {
-        example: {
-          path: string
-        }
-      }
-      
-      const options = {
-        keyPath: keyPath,
-        hooks: hooks
-      };
-      
-      const stateNode = TestStateNode.create<ExampleStateInterface, ExampleStateInterface, typeof options>(
-        options,
-        treedux
-      );
-      
-      const hook = stateNode.example.use();
-      expect(Object.keys(hook)).toEqual(['value', 'set']);
-      
-    });
-    
-    it("returns the correct value with mutators", () => {
-
-      class ExampleMutator extends AbstractMutator<any>
-      {
-        public getType(): string
-        {
-          return "example";
-        }
-
-        public getAction(...args): Action<any>
-        {
-          return Action.create(
-            {
-              type:    this.getType(),
-              payload: args
-            },
-            this.treedux
-          );
-        }
-
-        public reduce(state: any, action: any): any
-        {
-          return state;
-        }
-      }
-
-      const treedux = {
-        getState: jest.fn().mockReturnValue({ example: { path: 'hookValue' }} )
-      } as any;
-      const keyPath = ['example', 'path'];
-      const hooks = {
-        useState: jest.fn().mockReturnValue([ 'hookValue', jest.fn() ]),
-        useEffect: jest.fn(),
-      }
-
-      interface ExampleStateInterface
-      {
-        example: {
-          path: string
-        }
-      }
-
-      const options = {
-        keyPath: keyPath,
-        mutators: {
-          example: {
-            path: {
-              myTestMutator: (treedux) => new ExampleMutator(treedux)
-            }
-          }
-        },
-        hooks: hooks
-      };
-
-      const stateNode = StateNode.create<ExampleStateInterface, ExampleStateInterface, typeof options>(
-        options,
-        treedux
-      );
-
-      const examplePathNode = stateNode.example.path;
-      const examplePathHook = examplePathNode.use();
-      expect(Object.keys(examplePathHook)).toEqual(['value', 'set', 'myTestMutator']);
-      expect(hooks.useEffect).toBeCalledTimes(1);
-      expect(examplePathHook.value).toBe("hookValue");
-      const boundSet = examplePathHook.set;
-      boundSet.bind(stateNode);
-      expect(examplePathHook.set).toBe(boundSet);
-      const boundMutator = ExampleMutator.prototype.getAction;
-      boundMutator.bind(examplePathNode);
-      expect(examplePathHook.myTestMutator("some", "example", "args")).toEqual({ type: "example", payload: ["some", "example", "args"], treedux: treedux });
-    });
-    
-  });
-  
   describe("dynamic properties", () => {
 
       it("return null when non-string properties are accessed", () => {
@@ -431,10 +275,6 @@ describe("StateNode", () => {
         getState: jest.fn().mockReturnValue({ example: { path: 'hookValue' }} )
       } as any;
       const keyPath = ['example', 'path'];
-      const hooks = {
-        useState: jest.fn().mockReturnValue([ 'hookValue', jest.fn() ]),
-        useEffect: jest.fn(),
-      }
 
       interface ExampleStateInterface
       {
@@ -451,8 +291,7 @@ describe("StateNode", () => {
               myTestMutator: (treedux) => new ExampleMutator(treedux)
             }
           }
-        },
-        hooks: hooks
+        }
       };
 
       const stateNode = StateNode.create<ExampleStateInterface, ExampleStateInterface, typeof options>(
@@ -470,10 +309,6 @@ describe("StateNode", () => {
         getState: jest.fn().mockReturnValue({ example: { path: 'hookValue' }} )
       } as any;
       const keyPath = ['example', 'path'];
-      const hooks = {
-        useState: jest.fn().mockReturnValue([ 'hookValue', jest.fn() ]),
-        useEffect: jest.fn(),
-      }
 
       interface ExampleStateInterface
       {
@@ -490,8 +325,7 @@ describe("StateNode", () => {
               myTestMutator: (treedux) => new ExampleMutator(treedux)
             }
           }
-        },
-        hooks: hooks
+        }
       };
 
       const stateNode = StateNode.create<ExampleStateInterface, ExampleStateInterface, typeof options>(

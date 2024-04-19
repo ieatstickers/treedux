@@ -1,6 +1,5 @@
 
 import { Treedux } from "./Treedux";
-import { Hooks } from "./Type/Hooks";
 import { DefaultDataStoreMap } from "./Type/DefaultDataStoreMap";
 import { combineReducers, configureStore, createReducer } from "@reduxjs/toolkit";
 
@@ -17,8 +16,7 @@ class TestTreedux<DataStoreMap extends DefaultDataStoreMap = DefaultDataStoreMap
   public constructor(
     dataStores: DataStoreMap,
     options?: {
-      initialState?: any,
-      hooks?: Hooks
+      initialState?: any
     }
   )
   {
@@ -31,14 +29,12 @@ describe("Treedux", () => {
   describe("constructor", () => {
     const testDataStore = {
       setTreedux: jest.fn(),
-      setHooks: jest.fn(),
       getInitialState: jest.fn().mockReturnValue({ testInitialState: true }),
       getReducers: jest.fn().mockReturnValue({ testReducers: true }),
     };
     
     const testDataStore2 = {
       setTreedux: jest.fn(),
-      setHooks: jest.fn(),
       getInitialState: jest.fn().mockReturnValue({ test2InitialState: true }),
       getReducers: jest.fn().mockReturnValue({ test2Reducers: true }),
     };
@@ -49,14 +45,8 @@ describe("Treedux", () => {
     };
     
     const initialState = {};
-    const useEffect: any = () => {};
-    const useState: any = () => {};
     const options = {
-      initialState: initialState,
-      hooks: {
-        useEffect: useEffect,
-        useState: useState
-      }
+      initialState: initialState
     };
     
     let treedux: any;
@@ -72,7 +62,6 @@ describe("Treedux", () => {
     it("correctly sets internal properties", () => {
       expect(treedux['storeInstance']).toBeDefined();
       expect(treedux['dataStores']).toBe(dataStores);
-      expect(treedux['hooks']).toBe(options.hooks);
     });
     
     it("sets treedux instance on each data store", () => {
@@ -80,13 +69,6 @@ describe("Treedux", () => {
       expect(testDataStore.setTreedux).toHaveBeenCalledWith(treedux);
       expect(testDataStore2.setTreedux).toHaveBeenCalledTimes(1);
       expect(testDataStore2.setTreedux).toHaveBeenCalledWith(treedux);
-    });
-    
-    it("sets hooks on each data store", () => {
-      expect(testDataStore.setHooks).toHaveBeenCalledTimes(1);
-      expect(testDataStore.setHooks).toHaveBeenCalledWith(options.hooks);
-      expect(testDataStore2.setHooks).toHaveBeenCalledTimes(1);
-      expect(testDataStore2.setHooks).toHaveBeenCalledWith(options.hooks);
     });
     
     it("sets up redux reducers correctly", () => {
@@ -148,7 +130,6 @@ describe("Treedux", () => {
             return { testState: true };
           },
           setTreedux: jest.fn(),
-          setHooks: jest.fn(),
           getInitialState: jest.fn().mockReturnValue({ testInitialState: true }),
           getReducers: jest.fn()
         },
@@ -157,7 +138,6 @@ describe("Treedux", () => {
             return { testState2: true };
           },
           setTreedux: jest.fn(),
-          setHooks: jest.fn(),
           getInitialState: jest.fn().mockReturnValue({ test2InitialState: true }),
           getReducers: jest.fn()
         }

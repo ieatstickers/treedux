@@ -7,21 +7,18 @@ import { MutatorCreators } from "../Type/MutatorCreators";
 import { StateNodeInterface } from "../Type/StateNodeInterface";
 import { MutatorInterface } from "./MutatorInterface";
 import { MutatorMethods } from "../Type/MutatorMethods";
-import { Hooks } from "../Type/Hooks";
 
 type StateNodeOptions<T, StateInterface> = {
   keyPath: Array<string>,
-  mutators?: MutatorCreators<T, StateInterface>,
-  hooks?: Hooks
+  mutators?: MutatorCreators<T, StateInterface>
 }
 
-export class StateNode<StateNodeType, StateInterface, Options extends StateNodeOptions<StateNodeType, StateInterface> = StateNodeOptions<StateNodeType, StateInterface>> implements StateNodeInterface<StateNodeType, MutatorMethods<StateInterface, Options['mutators']>>
+export class StateNode<StateNodeType, StateInterface, Options extends StateNodeOptions<StateNodeType, StateInterface> = StateNodeOptions<StateNodeType, StateInterface>> implements StateNodeInterface<StateNodeType>
 {
   private readonly treedux: Treedux;
   private lastKnownValue: StateNodeType;
   private readonly keyPath: Array<string> = [];
   private readonly mutators: Options['mutators'];
-  private readonly hooks: Hooks;
   
   protected constructor(
     options: StateNodeOptions<StateNodeType, StateInterface>,
@@ -31,7 +28,6 @@ export class StateNode<StateNodeType, StateInterface, Options extends StateNodeO
     this.treedux = treedux;
     this.keyPath = options.keyPath;
     this.mutators = options.mutators;
-    this.hooks = options.hooks;
   }
   
   public static create<StateNodeType, StateInterface, Options extends StateNodeOptions<StateNodeType, StateInterface> = StateNodeOptions<StateNodeType, StateInterface>>(options: StateNodeOptions<StateNodeType, StateInterface>, treedux: Treedux): RecursiveStateNode<StateNodeType, StateInterface, Options['mutators']>
@@ -92,20 +88,6 @@ export class StateNode<StateNodeType, StateInterface, Options extends StateNodeO
     })
   }
   
-  public use(): { value: StateNodeType, set: (value: StateNodeType) => Action<{ keyPath: Array<string>, value: StateNodeType }> } & MutatorMethods<StateInterface, Options['mutators']>
-  {
-    if (!this.hooks) throw "Cannot use StateNode.use() - hooks have not been set.";
-    
-    const [ value, setValue ] = this.hooks.useState(this.get());
-    this.hooks.useEffect(() => this.subscribe(setValue));
-    
-    return {
-      value: value,
-      set: this.set.bind(this),
-      ...this.getMutatorMethods()
-    };
-  }
-  
   private createProxy(): RecursiveStateNode<StateNodeType, StateInterface, Options['mutators']>
   {
     return new Proxy(this, {
@@ -125,8 +107,7 @@ export class StateNode<StateNodeType, StateInterface, Options extends StateNodeO
         return StateNode.create(
           {
             keyPath: self.keyPath.concat(property),
-            mutators: self.mutators && self.mutators[property] ? self.mutators[property] : {},
-            hooks: self.hooks
+            mutators: self.mutators && self.mutators[property] ? self.mutators[property] : {}
           },
           self.treedux
         );

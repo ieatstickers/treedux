@@ -9,7 +9,6 @@ import {
 import { Action } from "./Data/Action";
 import { DefaultActionEnum } from "./Enum/DefaultActionEnum";
 import { Objects } from "./Utility/Objects";
-import { Hooks } from "./Type/Hooks";
 import { DefaultDataStoreMap } from "./Type/DefaultDataStoreMap";
 
 // Reducer map for Redux store
@@ -21,20 +20,17 @@ export class Treedux<DataStoreMap extends DefaultDataStoreMap = DefaultDataStore
 {
   private readonly storeInstance: EnhancedStore;
   private readonly dataStores: DataStoreMap;
-  private readonly hooks: Hooks;
   
   protected constructor(
     dataStores: DataStoreMap,
     options?: {
       initialState?: any,
-      hooks?: Hooks
     }
   )
   {
     this.dataStores = dataStores;
     options = options || {};
     const reducerMap: Partial<ReducerMap<DataStoreMap>> = {};
-    this.hooks = options.hooks;
     
     // For each data store
     for (const key in this.dataStores)
@@ -47,8 +43,6 @@ export class Treedux<DataStoreMap extends DefaultDataStoreMap = DefaultDataStore
       reducerMap[key] = createReducer(dataStore.getInitialState(), (builder) => {
         Object.entries(dataStore.getReducers()).forEach(([actionType, reducer]) => builder.addCase(actionType, reducer));
       });
-      // Set hooks on the data store
-      dataStore.setHooks(this.hooks);
     }
     
     // Combine all data store reducers to create app reducer
@@ -78,7 +72,7 @@ export class Treedux<DataStoreMap extends DefaultDataStoreMap = DefaultDataStore
   
   public static init<DataStoreMap extends DefaultDataStoreMap>(
     dataStores: DataStoreMap,
-    options?: { initialState?: any, hooks?: Hooks }
+    options?: { initialState?: any }
   ): Treedux<DataStoreMap>
   {
     return new Treedux(dataStores, options);

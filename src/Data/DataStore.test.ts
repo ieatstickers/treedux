@@ -83,17 +83,6 @@ describe("DataStore", () => {
     
   });
   
-  describe("setHooks", () => {
-    
-    it("correctly sets the hooks property", () => {
-      const dataStore = DataStore.create("test", { initialState: {}, mutators: {} })
-      const hooks = {} as any;
-      dataStore.setHooks(hooks);
-      expect(dataStore['hooks']).toEqual(hooks);
-    });
-    
-  });
-  
   describe("getInitialState", () => {
     
     it("returns the initial state", () => {
