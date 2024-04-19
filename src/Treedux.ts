@@ -1,5 +1,11 @@
-import { combineReducers, configureStore, createReducer, createSlice, Unsubscribe } from "@reduxjs/toolkit";
-import { ToolkitStore } from "@reduxjs/toolkit/dist/configureStore";
+import {
+  combineReducers,
+  configureStore,
+  createReducer,
+  createSlice,
+  EnhancedStore,
+  Unsubscribe
+} from "@reduxjs/toolkit";
 import { Action } from "./Data/Action";
 import { DefaultActionEnum } from "./Enum/DefaultActionEnum";
 import { Objects } from "./Utility/Objects";
@@ -13,7 +19,7 @@ type ReducerMap<DataStoreMap extends DefaultDataStoreMap> = {
 
 export class Treedux<DataStoreMap extends DefaultDataStoreMap = DefaultDataStoreMap>
 {
-  private readonly storeInstance: ToolkitStore;
+  private readonly storeInstance: EnhancedStore;
   private readonly dataStores: DataStoreMap;
   private readonly hooks: Hooks;
   
