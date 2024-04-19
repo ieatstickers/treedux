@@ -18,14 +18,16 @@ Treedux is designed to be the antidote to this. Out of the box, it allows you to
 
 ## Installation
 
-Treedux isn't available on npm yet but you can install it directly from GitHub by adding the following to your package.json:
+Using npm:
 
-```json
-{
-  "dependencies": {
-    "treedux": "git+https://git@github.com/ieatstickers/treedux.git"
-  }
-}
+```bash
+npm install treeduxjs
+```
+
+Using yarn:
+
+```bash
+yarn add treeduxjs
 ```
 
 ## Example Usage
