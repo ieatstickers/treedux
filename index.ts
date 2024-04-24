@@ -7,3 +7,4 @@ export { StateNode } from './src/Data/StateNode';
 export { RecursiveStateNode } from './src/Type/RecursiveStateNode';
 export { DefaultDataStoreMap } from './src/Type/DefaultDataStoreMap';
 export { DefaultActionEnum } from './src/Enum/DefaultActionEnum';
+export { StateNodeInterface } from './src/Type/StateNodeInterface';
