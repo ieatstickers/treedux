@@ -7,6 +7,8 @@ import { MutatorCreators } from "../Type/MutatorCreators";
 import { StateNodeInterface } from "../Type/StateNodeInterface";
 import { MutatorInterface } from "./MutatorInterface";
 import { MutatorMethods } from "../Type/MutatorMethods";
+import { ObjectKeys } from "../Type/ObjectKeys";
+import { ObjectPropertyType } from "../Type/ObjectPropertyType";
 
 type StateNodeOptions<T, StateInterface> = {
   keyPath: Array<string>,
@@ -86,6 +88,23 @@ export class StateNode<StateNodeType, StateInterface, Options extends StateNodeO
       currentValue = newValue;
       callback(currentValue);
     })
+  }
+  
+  public byKey<K extends ObjectKeys<StateNodeType>>(key: K): RecursiveStateNode<ObjectPropertyType<StateNodeType, K>, StateInterface,
+    K extends keyof Options['mutators'] ?  Options['mutators'][K] extends MutatorCreators<ObjectPropertyType<StateNodeType, K>, StateInterface> ? Options['mutators'][K] : {} : {}
+  >
+  {
+    if (!key) throw `Key must be provided to byKey method.`;
+    
+    return StateNode.create(
+      {
+        keyPath: this.keyPath.concat([key.toString()]),
+        mutators: this.mutators
+      },
+      this.treedux
+    ) as unknown as RecursiveStateNode<ObjectPropertyType<StateNodeType, K>, StateInterface,
+      K extends keyof Options['mutators'] ?  Options['mutators'][K] extends MutatorCreators<ObjectPropertyType<StateNodeType, K>, StateInterface> ? Options['mutators'][K] : {} : {}
+    >
   }
   
   private createProxy(): RecursiveStateNode<StateNodeType, StateInterface, Options['mutators']>

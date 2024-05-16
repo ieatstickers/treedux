@@ -3,6 +3,8 @@ import { Action } from "./Action";
 import { RecursiveStateNode } from "../Type/RecursiveStateNode";
 import { MutatorCreators } from "../Type/MutatorCreators";
 import { StateNodeInterface } from "../Type/StateNodeInterface";
+import { ObjectKeys } from "../Type/ObjectKeys";
+import { ObjectPropertyType } from "../Type/ObjectPropertyType";
 type StateNodeOptions<T, StateInterface> = {
     keyPath: Array<string>;
     mutators?: MutatorCreators<T, StateInterface>;
@@ -20,6 +22,7 @@ export declare class StateNode<StateNodeType, StateInterface, Options extends St
         value: StateNodeType;
     }>;
     subscribe(callback: (data: StateNodeType) => void): () => void;
+    byKey<K extends ObjectKeys<StateNodeType>>(key: K): RecursiveStateNode<ObjectPropertyType<StateNodeType, K>, StateInterface, K extends keyof Options['mutators'] ? Options['mutators'][K] extends MutatorCreators<ObjectPropertyType<StateNodeType, K>, StateInterface> ? Options['mutators'][K] : {} : {}>;
     private createProxy;
     private getMutatorMethod;
     private getMutatorMethods;
