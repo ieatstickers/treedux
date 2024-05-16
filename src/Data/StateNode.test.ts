@@ -127,6 +127,29 @@ describe("StateNode", () => {
     });
 
   });
+  
+  describe("byKey", () => {
+
+    it("returns an action with the key path and value", () => {
+
+      const treedux = {} as any;
+      const keyPath = ['example'];
+      const stateNode = StateNode.create({ keyPath: keyPath }, treedux);
+      const childNode = stateNode.byKey('anotherKey' as never);
+      expect(childNode).toBeInstanceOf(StateNode);
+    
+    });
+    
+    it("throws an error if you don't pass it a key", () => {
+      
+      const treedux = {} as any;
+      const keyPath = ['example'];
+      const stateNode = StateNode.create({ keyPath: keyPath }, treedux);
+      expect(() => stateNode.byKey(undefined as never)).toThrow();
+      
+    });
+
+  });
 
   describe("subscribe", () => {
 
