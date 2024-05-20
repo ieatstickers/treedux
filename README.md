@@ -125,7 +125,58 @@ userNode
   .dispatch(); // The dispatch method will actually dispatch the action to the store and update the state
 ```
 
-### 4. Using Mutators
+### 4. Using Dynamic Nodes
+
+For the keys that are explicitly specified in your data store's interface, you can use the type-hinted properties to traverse the tree. However, sometimes parts of the state tree use index signatures or other dynamic keys that can't be explicitly type-hinted. In these cases, you can use the `byKey` and `delete` methods to traverse the tree and delete dynamically created data. These additional methods are only available on nodes that are dynamic and can't be type-hinted in the usual way.
+
+Let's take the following data store interface as an example. It tracks the number of ads and trackers blocked on each domain for each tab in the browser.
+
+```typescript
+
+interface AdblockStats
+{
+  stats: {
+    [tabId: number]: {
+      [domain: string]: {
+        adsBlocked: number,
+        trackersBlocked: number
+      }
+    }
+  }
+}
+```
+
+As the tabs and domains are both created dynamically and can't be explicitly typed, we'll use the `byKey` method to traverse the tree.
+
+```typescript
+// All the usual methods are available as they would be on any other state node
+const stateNode = treedux.state.adblock.stats.byKey(123).byKey('example.com');
+
+// We can get the current value
+const currentValue = stateNode.get();
+
+// We can subscribe to changes
+stateNode.subscribe((stats) => {
+  console.log('Stats updated', stats);
+})
+
+// And we can set a new value
+stateNode.set({
+  adsBlocked: 123,
+  trackersBlocked: 456
+});
+```
+
+These dynamic nodes also have access to the `delete` method which completely removes the data from the state tree (rather than setting its value to null or undefined).
+
+```typescript
+// Delete the stat for the domain 'example.com' on tabId 123
+treedux.state.adblock.stats.byKey(123).byKey('example.com').delete().dispatch();
+// Delete all stats for the tab with an id of 123
+treedux.state.adblock.stats.byKey(123).delete().dispatch();
+```
+
+### 5. Using Mutators
 
 Sometimes, you need to perform more complex updates to the state and the default `set` method isn't enough. This is especially true for data structures like arrays where getting the current value, pushing an item in then setting it again could introduce race conditions. 
 
@@ -240,7 +291,7 @@ treedux
 
 ```
 
-### 5. Using React Hooks
+### 6. Using React Hooks
 
 Each node on the state tree also provides a React hook through the `use` method that exposes the current value, the `set` method and any mutator methods like the `add` method in the previous example. The hook will automatically unsubscribe when the component unmounts.
 

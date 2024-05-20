@@ -13,7 +13,7 @@ export declare class DataStore<StateInterface, Mutators extends MutatorCreators<
     private treedux;
     constructor(key: string, options: DataStoreOptions<StateInterface, Mutators>);
     static create<StateInterface, Mutators extends MutatorCreators<StateInterface, StateInterface> = MutatorCreators<StateInterface, StateInterface>>(key: string, options: DataStoreOptions<StateInterface, Mutators>): DataStore<StateInterface, Mutators>;
-    get state(): RecursiveStateNode<StateInterface, StateInterface, Mutators>;
+    get state(): RecursiveStateNode<StateInterface, {}, StateInterface, Mutators>;
     setTreedux(treedux: Treedux): this;
     getInitialState(): StateInterface;
     getReducers(): {

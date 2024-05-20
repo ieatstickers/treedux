@@ -6,7 +6,6 @@ import { RecursiveStateNode } from "../Type/RecursiveStateNode";
 import { MutatorCreators } from "../Type/MutatorCreators";
 import { StateNodeInterface } from "../Type/StateNodeInterface";
 import { MutatorInterface } from "./MutatorInterface";
-import { MutatorMethods } from "../Type/MutatorMethods";
 import { ObjectKeys } from "../Type/ObjectKeys";
 import { ObjectPropertyType } from "../Type/ObjectPropertyType";
 
@@ -15,7 +14,7 @@ type StateNodeOptions<T, StateInterface> = {
   mutators?: MutatorCreators<T, StateInterface>
 }
 
-export class StateNode<StateNodeType, StateInterface, Options extends StateNodeOptions<StateNodeType, StateInterface> = StateNodeOptions<StateNodeType, StateInterface>> implements StateNodeInterface<StateNodeType>
+export class StateNode<StateNodeType, ParentStateNodeType, StateInterface, Options extends StateNodeOptions<StateNodeType, StateInterface> = StateNodeOptions<StateNodeType, StateInterface>> implements StateNodeInterface<StateNodeType>
 {
   private readonly treedux: Treedux;
   private lastKnownValue: StateNodeType;
@@ -32,9 +31,9 @@ export class StateNode<StateNodeType, StateInterface, Options extends StateNodeO
     this.mutators = options.mutators;
   }
   
-  public static create<StateNodeType, StateInterface, Options extends StateNodeOptions<StateNodeType, StateInterface> = StateNodeOptions<StateNodeType, StateInterface>>(options: StateNodeOptions<StateNodeType, StateInterface>, treedux: Treedux): RecursiveStateNode<StateNodeType, StateInterface, Options['mutators']>
+  public static create<StateNodeType, ParentStateNodeType, StateInterface, Options extends StateNodeOptions<StateNodeType, StateInterface> = StateNodeOptions<StateNodeType, StateInterface>>(options: StateNodeOptions<StateNodeType, StateInterface>, treedux: Treedux): RecursiveStateNode<StateNodeType, ParentStateNodeType, StateInterface, Options['mutators']>
   {
-    return (new StateNode<StateNodeType, StateInterface, Options>(options, treedux)).createProxy();
+    return (new StateNode<StateNodeType, ParentStateNodeType, StateInterface, Options>(options, treedux)).createProxy();
   }
   
   public get(): StateNodeType
@@ -90,7 +89,7 @@ export class StateNode<StateNodeType, StateInterface, Options extends StateNodeO
     })
   }
   
-  public byKey<K extends ObjectKeys<StateNodeType>>(key: K): RecursiveStateNode<ObjectPropertyType<StateNodeType, K>, StateInterface,
+  public byKey<K extends ObjectKeys<StateNodeType>>(key: K): RecursiveStateNode<ObjectPropertyType<StateNodeType, K>, StateNodeType, StateInterface,
     K extends keyof Options['mutators'] ?  Options['mutators'][K] extends MutatorCreators<ObjectPropertyType<StateNodeType, K>, StateInterface> ? Options['mutators'][K] : {} : {}
   >
   {
@@ -102,12 +101,26 @@ export class StateNode<StateNodeType, StateInterface, Options extends StateNodeO
         mutators: this.mutators
       },
       this.treedux
-    ) as unknown as RecursiveStateNode<ObjectPropertyType<StateNodeType, K>, StateInterface,
+    ) as unknown as RecursiveStateNode<
+      ObjectPropertyType<StateNodeType, K>,
+      StateNodeType,
+      StateInterface,
       K extends keyof Options['mutators'] ?  Options['mutators'][K] extends MutatorCreators<ObjectPropertyType<StateNodeType, K>, StateInterface> ? Options['mutators'][K] : {} : {}
     >
   }
   
-  private createProxy(): RecursiveStateNode<StateNodeType, StateInterface, Options['mutators']>
+  public delete(): Action<{ keyPath: Array<string> }>
+  {
+    return Action.create(
+      {
+        type: DefaultActionEnum.DELETE_BY_KEY_PATH,
+        payload: { keyPath: this.keyPath }
+      },
+      this.treedux
+    );
+  }
+  
+  private createProxy(): RecursiveStateNode<StateNodeType, ParentStateNodeType, StateInterface, Options['mutators']>
   {
     return new Proxy(this, {
       get(self, property: string | symbol)
@@ -131,7 +144,7 @@ export class StateNode<StateNodeType, StateInterface, Options extends StateNodeO
           self.treedux
         );
       },
-    }) as unknown as RecursiveStateNode<StateNodeType, StateInterface, Options['mutators']>
+    }) as unknown as RecursiveStateNode<StateNodeType, ParentStateNodeType, StateInterface, Options['mutators']>
   }
   
   private getMutatorMethod(methodName: string): MutatorInterface<any>['getAction']
@@ -142,17 +155,5 @@ export class StateNode<StateNodeType, StateInterface, Options extends StateNodeO
     const mutator = mutatorCreator(this.treedux);
     return mutator.getAction.bind(mutator);
   }
-  
-  private getMutatorMethods(): MutatorMethods<StateInterface, Options['mutators']>
-  {
-    const mutatorCreators = this.mutators || {};
-    const mutatorMethods = {} as MutatorMethods<StateInterface, Options['mutators']>;
-    
-    for (const methodName in mutatorCreators)
-    {
-      mutatorMethods[methodName] = this.getMutatorMethod(methodName);
-    }
-    
-    return mutatorMethods;
-  }
+
 }

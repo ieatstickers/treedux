@@ -4,7 +4,7 @@ import { Action } from "./Action";
 import { DataStore } from "./DataStore";
 import { AbstractMutator } from "./AbstractMutator";
 
-class TestStateNode extends StateNode<any, any>
+class TestStateNode extends StateNode<any, any, any>
 {
   public constructor(
     options: any,
@@ -108,8 +108,8 @@ describe("StateNode", () => {
   describe("set", () => {
 
     it("returns an action with the key path and value", () => {
-
-      const treedux = {} as any;
+      
+      const treedux = jest.mock("../Treedux") as unknown as Treedux;
       const keyPath = ['example', 'path'];
       const stateNode = StateNode.create({ keyPath: keyPath }, treedux);
       const setAction = stateNode.set('newValue');
@@ -131,8 +131,8 @@ describe("StateNode", () => {
   describe("byKey", () => {
 
     it("returns an action with the key path and value", () => {
-
-      const treedux = {} as any;
+      
+      const treedux = jest.mock("../Treedux") as unknown as Treedux;
       const keyPath = ['example'];
       const stateNode = StateNode.create({ keyPath: keyPath }, treedux);
       const childNode = stateNode.byKey('anotherKey' as never);
@@ -142,13 +142,38 @@ describe("StateNode", () => {
     
     it("throws an error if you don't pass it a key", () => {
       
-      const treedux = {} as any;
+      const treedux = jest.mock("../Treedux") as unknown as Treedux;
       const keyPath = ['example'];
       const stateNode = StateNode.create({ keyPath: keyPath }, treedux);
       expect(() => stateNode.byKey(undefined as never)).toThrow();
       
     });
 
+  });
+  
+  describe("delete", () => {
+    type TestStateNodeType = {
+      example: {
+        [key: string]: boolean
+      }
+    }
+    
+    it("returns an action with the key path and value", () => {
+      
+      const treedux = jest.mock("../Treedux") as unknown as Treedux;
+      const keyPath = ['test'];
+      const options = { keyPath: keyPath };
+      const stateNode = StateNode.create<TestStateNodeType, { example: TestStateNodeType }, TestStateNodeType, typeof options>(options, treedux);
+      const action = stateNode.example.byKey('test').delete();
+      expect(action).toBeInstanceOf(Action);
+      expect(action).toEqual({
+        type: '__DELETE_BY_KEY_PATH__',
+        payload: { keyPath: [ "test", "example", "test" ] },
+        treedux: treedux
+      });
+      
+    });
+    
   });
 
   describe("subscribe", () => {
@@ -216,11 +241,14 @@ describe("StateNode", () => {
 
         interface ExampleDataStoreInterface {
           someExample: boolean,
-          anotherExample: string
+          anotherExample: string,
+          data: {
+            [key: number]: boolean
+          }
         }
         const exampleDataStore = DataStore.create<ExampleDataStoreInterface>(
           'example',
-          { initialState: { someExample: false, anotherExample: "test string" } }
+          { initialState: { someExample: false, anotherExample: "test string", data: {} } }
         );
 
         const treedux = Treedux.init(
@@ -235,6 +263,7 @@ describe("StateNode", () => {
         treedux.dispatch(
           treedux.state.example.someExample.set(true),
           treedux.state.example.anotherExample.set("test string"),
+          treedux.state.example.data.byKey(123).delete()
         );
 
         await (new Promise((resolve) => setTimeout(resolve, 100)));
@@ -317,7 +346,7 @@ describe("StateNode", () => {
         }
       };
 
-      const stateNode = StateNode.create<ExampleStateInterface, ExampleStateInterface, typeof options>(
+      const stateNode = StateNode.create<ExampleStateInterface, {}, ExampleStateInterface, typeof options>(
         options,
         treedux
       );
@@ -351,7 +380,7 @@ describe("StateNode", () => {
         }
       };
 
-      const stateNode = StateNode.create<ExampleStateInterface, ExampleStateInterface, typeof options>(
+      const stateNode = StateNode.create<ExampleStateInterface, {}, ExampleStateInterface, typeof options>(
         options,
         treedux
       );
@@ -365,50 +394,11 @@ describe("StateNode", () => {
   describe("createProxy", () => {
 
     it("returns a proxy object", () => {
-      const treedux = {} as any;
+      const treedux = jest.mock("../Treedux") as unknown as Treedux;
       const keyPath = [ "example", "path" ];
       const stateNode = new TestStateNode({ keyPath: keyPath }, treedux);
       const proxy = stateNode["createProxy"]();
       expect(proxy['testProperty']).toBeInstanceOf(StateNode);
-    });
-
-  });
-
-  describe("getMutatorMethods", () => {
-
-    it("returns an object with mutator methods", () => {
-
-      const mutator = new ExampleMutator({} as any);
-
-      const stateNode = new TestStateNode(
-        {
-          keyPath: [ "example", "path" ],
-          mutators: {
-            mutate: () => mutator
-          }
-        },
-        {} as any
-      );
-
-      const mutatorMethods = stateNode['getMutatorMethods']();
-      expect(Object.keys(mutatorMethods).length).toBe(1);
-      const boundActionCreator = mutator.getAction;
-      boundActionCreator.bind(mutator);
-      expect(mutatorMethods.mutate()).toEqual(boundActionCreator.call(mutator));
-    });
-
-    it("returns an empty object if no mutator methods set", () => {
-
-      const stateNode = new TestStateNode(
-        {
-          keyPath: [ "example", "path" ]
-        },
-        {} as any
-      );
-      const mutatorMethods = stateNode['getMutatorMethods']();
-
-      expect(Object.keys(mutatorMethods).length).toBe(0);
-
     });
 
   });

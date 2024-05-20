@@ -32,10 +32,10 @@ export class DataStore<StateInterface, Mutators extends MutatorCreators<StateInt
     return new DataStore<StateInterface, Mutators>(key, options);
   }
   
-  public get state(): RecursiveStateNode<StateInterface, StateInterface, Mutators>
+  public get state(): RecursiveStateNode<StateInterface, {}, StateInterface, Mutators>
   {
     const options = { keyPath: [this.KEY], mutators: this.mutators };
-    return StateNode.create<StateInterface, StateInterface, typeof options>(options, this.treedux);
+    return StateNode.create<StateInterface, {}, StateInterface, typeof options>(options, this.treedux);
   }
   
   public setTreedux(treedux: Treedux): this

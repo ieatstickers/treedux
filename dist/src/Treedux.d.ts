@@ -11,7 +11,7 @@ export declare class Treedux<DataStoreMap extends DefaultDataStoreMap = DefaultD
         initialState?: any;
     }): Treedux<DataStoreMap>;
     get state(): {
-        [K in keyof DataStoreMap]: DataStoreMap[K]['state'];
+        [K in keyof DataStoreMap]: DataStoreMap[K]["state"];
     };
     getState(): any;
     subscribe(listener: () => void): Unsubscribe;
