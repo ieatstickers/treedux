@@ -1,6 +1,6 @@
 {
   "name": "treeduxjs",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "Lightweight wrapper for Redux providing fully type-hinted state tree traversal out of the box",
   "author": "Mike Burke",
   "license": "MIT",
