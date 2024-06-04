@@ -1,6 +1,7 @@
 import { DataStore } from "./DataStore";
 import { StateNode } from "./StateNode";
 import { AbstractMutator } from "./AbstractMutator";
+import { Treedux } from "../Treedux";
 
 class ExampleMutator extends AbstractMutator<string>
 {
@@ -97,15 +98,24 @@ describe("DataStore", () => {
     
     it("returns an object with action types as keys and reduce functions as values", () => {
       
+      const mutator = new ExampleMutator({} as Treedux);
+      jest.spyOn(mutator, 'reduce').mockImplementation(() => 'mocked result');
+      
       const dataStore = DataStore.create("test", {
         initialState: {}, mutators: {
-          example: (treedux) => new ExampleMutator(treedux)
+          example: (treedux) => mutator
         }
       });
       expect(dataStore.getReducers()).toEqual({
         example: expect.any(Function)
       });
-      expect(dataStore.getReducers().example).toBe(ExampleMutator.prototype.reduce);
+      const stateArg = { test: true };
+      const actionArg = {
+        type: 'example',
+        payload: ['testArg1', 'testArg2']
+      };
+      expect(dataStore.getReducers().example(stateArg, actionArg)).toEqual('mocked result');
+      expect(mutator.reduce).toHaveBeenCalledWith(stateArg, actionArg);
     });
   });
   
