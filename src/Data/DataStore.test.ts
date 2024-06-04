@@ -20,7 +20,13 @@ class ExampleMutator extends AbstractMutator<string>
   
   public reduce(state: any, action: any): void
   {
+    this.somePrivateMethod();
     return;
+  }
+  
+  public somePrivateMethod()
+  {
+    return {};
   }
 }
 
@@ -117,6 +123,25 @@ describe("DataStore", () => {
       expect(dataStore.getReducers().example(stateArg, actionArg)).toEqual('mocked result');
       expect(mutator.reduce).toHaveBeenCalledWith(stateArg, actionArg);
     });
+    
+    it("bind mutator reducers to the mutator instance", () => {
+      const mutator = new ExampleMutator({} as Treedux);
+      jest.spyOn(mutator, 'somePrivateMethod');
+      
+      const dataStore = DataStore.create("test", {
+        initialState: {}, mutators: {
+          example: (treedux) => mutator
+        }
+      });
+      const stateArg = { test: true };
+      const actionArg = {
+        type: 'example',
+        payload: ['testArg1', 'testArg2']
+      };
+      expect(() => dataStore.getReducers().example(stateArg, actionArg)).not.toThrow();
+      expect(mutator['somePrivateMethod']).toHaveBeenCalled();
+    });
+    
   });
   
 
