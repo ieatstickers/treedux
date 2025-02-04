@@ -2,13 +2,13 @@ export class Objects
 {
   public static isObject(value: any): value is object
   {
-    return typeof value === 'object' && value !== null;
+    return typeof value === "object" && value !== null;
   }
   
   public static setByKeyPath<V, T>(keyPath: Array<string>, value: V, target: T): T
   {
     // Make a copy of the keyPath array to avoid modifying the original array.
-    const path = [...keyPath];
+    const path = [ ...keyPath ];
     
     // Create a deep copy of the object.
     const newObject: T = this.deepCopy(target);
@@ -55,7 +55,7 @@ export class Objects
   private static deepCopy<T>(object: T): T
   {
     // If the object is not an object or null, return it directly.
-    if (typeof object !== 'object' || object === null)
+    if (typeof object !== "object" || object === null)
     {
       return object;
     }
