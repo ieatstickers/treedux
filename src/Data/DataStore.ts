@@ -26,7 +26,7 @@ export class DataStore<StateInterface, Mutators extends MutatorCreators<StateInt
   
   public static create<StateInterface, Mutators extends MutatorCreators<StateInterface, StateInterface> = MutatorCreators<StateInterface, StateInterface>>(
     key: string,
-    options: DataStoreOptions<StateInterface, Mutators>,
+    options: DataStoreOptions<StateInterface, Mutators>
   ): DataStore<StateInterface, Mutators>
   {
     return new DataStore<StateInterface, Mutators>(key, options);
@@ -34,7 +34,7 @@ export class DataStore<StateInterface, Mutators extends MutatorCreators<StateInt
   
   public get state(): RecursiveStateNode<StateInterface, {}, StateInterface, Mutators>
   {
-    const options = { keyPath: [this.KEY], mutators: this.mutators };
+    const options = { keyPath: [ this.KEY ], mutators: this.mutators };
     return StateNode.create<StateInterface, {}, StateInterface, typeof options>(options, this.treedux);
   }
   
@@ -49,21 +49,21 @@ export class DataStore<StateInterface, Mutators extends MutatorCreators<StateInt
     return this.initialState;
   }
   
-  public getReducers(): { [actionType: string]: MutatorInterface<StateInterface>['reduce'] }
+  public getReducers(): { [actionType: string]: MutatorInterface<StateInterface>["reduce"] }
   {
     return this.hydrateReducersFromMutators({}, this.mutators);
   }
   
   private hydrateReducersFromMutators(
-    reducerMap: { [actionType: string]: MutatorInterface<StateInterface>['reduce'] },
+    reducerMap: { [actionType: string]: MutatorInterface<StateInterface>["reduce"] },
     mutators: MutatorCreators<{}, StateInterface>
-  ): { [actionType: string]: MutatorInterface<StateInterface>['reduce'] }
+  ): { [actionType: string]: MutatorInterface<StateInterface>["reduce"] }
   {
     for (const key in mutators)
     {
       const mutatorCreator = mutators[key];
       
-      if (typeof mutatorCreator === 'object')
+      if (typeof mutatorCreator === "object")
       {
         this.hydrateReducersFromMutators(reducerMap, mutatorCreator);
       }
