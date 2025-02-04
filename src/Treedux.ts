@@ -86,8 +86,6 @@ export class Treedux<DataStoreMap extends DefaultDataStoreMap = DefaultDataStore
   
   public get state(): { [K in keyof DataStoreMap]: DataStoreMap[K]["state"] }
   {
-    if (!this.storeInstance) throw "Cannot get store. Redux store has not been initialized.";
-    
     const storeObj: { [K in keyof DataStoreMap]?: DataStoreMap[K]["state"] } = {};
     
     for (const key in this.dataStores)
@@ -100,21 +98,16 @@ export class Treedux<DataStoreMap extends DefaultDataStoreMap = DefaultDataStore
   
   public getState(): any
   {
-    if (!this.storeInstance) throw "Cannot get state. Redux store has not been initialized.";
-    
     return this.storeInstance.getState();
   }
   
   public subscribe(listener: () => void): Unsubscribe
   {
-    if (!this.storeInstance) throw "Cannot subscribe to store. Redux store has not been initialized.";
     return this.storeInstance.subscribe(listener);
   }
   
   public dispatch(...actions: Array<Action<any>>): void
   {
-    if (!this.storeInstance) throw "Cannot dispatch action. Redux store has not been initialized.";
-    
     this.storeInstance.dispatch({
       type: DefaultActionEnum.BATCH,
       payload: actions.map(action => action.serialize())
