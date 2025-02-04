@@ -9,7 +9,7 @@ import { MutatorCreators } from "./MutatorCreators";
 export type MutatorMethods<StateInterface, StateNodeMutatorCreators extends MutatorCreators<{}, StateInterface>> = IsPOJO<StateNodeMutatorCreators> extends true
   ? {
     [K in keyof StateNodeMutatorCreators]: StateNodeMutatorCreators[K] extends MutatorCreator<StateInterface>
-      ? ReturnType<StateNodeMutatorCreators[K]>['getAction']
+      ? ReturnType<StateNodeMutatorCreators[K]>["getAction"]
       : {}
   }
   : {}
