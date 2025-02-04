@@ -1,4 +1,3 @@
-
 type DefaultKeys = keyof Object
   | keyof Array<any>
   | keyof Date
