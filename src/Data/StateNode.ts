@@ -53,7 +53,7 @@ export class StateNode<StateNodeType, ParentStateNodeType, StateInterface, Optio
       }
       else
       {
-        this.lastKnownValue = null;
+        this.lastKnownValue = undefined;
         return this.lastKnownValue;
       }
     }
