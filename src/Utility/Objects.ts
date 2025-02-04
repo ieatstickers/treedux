@@ -7,12 +7,6 @@ export class Objects
   
   public static setByKeyPath<V, T>(keyPath: Array<string>, value: V, target: T): T
   {
-    // Check if the keyPath is empty, and if so, throw an error.
-    if (keyPath.length === 0)
-    {
-      throw new Error("Key path should not be empty.");
-    }
-    
     // Make a copy of the keyPath array to avoid modifying the original array.
     const path = [...keyPath];
     
