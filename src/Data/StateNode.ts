@@ -39,11 +39,7 @@ export class StateNode<StateNodeType, ParentStateNodeType, StateInterface, Optio
   public get(): StateNodeType
   {
     const keys = [ ...this.keyPath ];
-    const state = this.treedux.getState();
-    
-    if (keys.length === 0) return state;
-    
-    let value = state;
+    let value = this.treedux.getState();
     
     while (keys.length > 0)
     {
