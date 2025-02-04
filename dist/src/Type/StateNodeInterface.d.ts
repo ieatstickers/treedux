@@ -1,9 +1,11 @@
 import { Action } from "../Data/Action";
-export interface StateNodeInterface<Type> {
+import { ReadOnlyRecursiveStateNode } from "./ReadOnlyRecursiveStateNode";
+export interface StateNodeInterface<Type, StateInterface> {
     get(): Type;
     set(value: Type): Action<{
         keyPath: Array<string>;
         value: Type;
     }>;
     subscribe(callback: (data: Type) => void): () => void;
+    createReadOnlyCopy(): ReadOnlyRecursiveStateNode<Type, StateInterface>;
 }

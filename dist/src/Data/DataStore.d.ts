@@ -17,7 +17,7 @@ export declare class DataStore<StateInterface, Mutators extends MutatorCreators<
     setTreedux(treedux: Treedux): this;
     getInitialState(): StateInterface;
     getReducers(): {
-        [actionType: string]: MutatorInterface<StateInterface>['reduce'];
+        [actionType: string]: MutatorInterface<StateInterface>["reduce"];
     };
     private hydrateReducersFromMutators;
 }
