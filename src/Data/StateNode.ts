@@ -8,13 +8,15 @@ import { StateNodeInterface } from "../Type/StateNodeInterface";
 import { MutatorInterface } from "./MutatorInterface";
 import { ObjectKeys } from "../Type/ObjectKeys";
 import { ObjectPropertyType } from "../Type/ObjectPropertyType";
+import { ReadOnlyRecursiveStateNode } from "../Type/ReadOnlyRecursiveStateNode";
+import { ReadOnlyStateNode } from "./ReadOnlyStateNode";
 
 type StateNodeOptions<T, StateInterface> = {
   keyPath: Array<string>,
   mutators?: MutatorCreators<T, StateInterface>
 }
 
-export class StateNode<StateNodeType, ParentStateNodeType, StateInterface, Options extends StateNodeOptions<StateNodeType, StateInterface> = StateNodeOptions<StateNodeType, StateInterface>> implements StateNodeInterface<StateNodeType>
+export class StateNode<StateNodeType, ParentStateNodeType, StateInterface, Options extends StateNodeOptions<StateNodeType, StateInterface> = StateNodeOptions<StateNodeType, StateInterface>> implements StateNodeInterface<StateNodeType, StateInterface>
 {
   private readonly treedux: Treedux;
   private lastKnownValue: StateNodeType;
@@ -114,6 +116,11 @@ export class StateNode<StateNodeType, ParentStateNodeType, StateInterface, Optio
       },
       this.treedux
     );
+  }
+  
+  public createReadOnlyCopy(): ReadOnlyRecursiveStateNode<StateNodeType, StateInterface>
+  {
+    return ReadOnlyStateNode.create({ keyPath: this.keyPath }, this.treedux) as unknown as ReadOnlyRecursiveStateNode<StateNodeType, StateInterface>;
   }
   
   private createProxy(): RecursiveStateNode<StateNodeType, ParentStateNodeType, StateInterface, Options['mutators']>

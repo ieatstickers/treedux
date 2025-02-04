@@ -11,7 +11,7 @@ import { Deletable } from "./Deletable";
 // node to get, set, subscribe etc. as well as any custom mutator methods that have been passed in. It also type-hints
 // for any child nodes in the tree, so you can continually traverse down.
 export type RecursiveStateNode<StateNodeType, ParentStateNodeType, StateInterface, StateNodeMutatorCreators extends MutatorCreators<StateNodeType, StateInterface> = {}> =
-  StateNodeWithMutators<StateNodeType, MutatorMethods<StateInterface, StateNodeMutatorCreators>>
+  StateNodeWithMutators<StateNodeType, StateInterface, MutatorMethods<StateInterface, StateNodeMutatorCreators>>
   & (
   IsPrimitive<StateNodeType> extends true
     ? {}
