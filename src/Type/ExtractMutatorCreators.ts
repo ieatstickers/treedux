@@ -1,4 +1,3 @@
-
 // Helper type to extract the mutator creators for a given key
 import { MutatorCreators } from "./MutatorCreators";
 import { ObjectPropertyType } from "./ObjectPropertyType";
