@@ -1,4 +1,3 @@
-
 // UserStore.ts
 
 import { DataStore } from "./Data/DataStore";
@@ -48,7 +47,7 @@ class IncrementMutator extends AbstractMutator<TestDataStoreInterface>
 const initialState: TestDataStoreInterface = {
   user: {
     name: "John McClane",
-    age:  32
+    age: 32
   },
   incrementableNumeric: 0,
   dynamicObject: {
@@ -66,7 +65,7 @@ export class TestDataStore
     incrementableNumeric: {
       increment: (treedux: Treedux) => new IncrementMutator(treedux)
     }
-  }
+  };
   
   public static create()
   {
@@ -90,7 +89,7 @@ export class InvalidDataStore
       increment: (treedux: Treedux) => new IncrementMutator(treedux),
       decrement: (treedux: Treedux) => new IncrementMutator(treedux)
     }
-  }
+  };
   
   public static create()
   {
@@ -104,7 +103,7 @@ export class InvalidDataStore
   }
 }
 
-describe('Treedux', () => {
+describe("Treedux", () => {
   
   describe("DataStore", () => {
     
@@ -114,7 +113,7 @@ describe('Treedux', () => {
           invalid: InvalidDataStore.create()
         })
       ).toThrow();
-    })
+    });
     
   });
   
@@ -274,7 +273,7 @@ describe('Treedux', () => {
         });
         
         expect(() => treedux.state.test.dynamicObject.byKey(undefined)).toThrow();
-      })
+      });
       
     });
     
@@ -340,7 +339,7 @@ describe('Treedux', () => {
       });
       
     });
-  
+    
   });
   
   describe("ReadOnlyStateNode", () => {
@@ -443,7 +442,7 @@ describe('Treedux', () => {
         });
         
         expect(() => treedux.state.test.dynamicObject.createReadOnlyCopy().byKey(undefined)).toThrow();
-      })
+      });
       
     });
     
@@ -466,7 +465,7 @@ describe('Treedux', () => {
         const dynamic = treedux.state.test.dynamicObject.byKey("example").byKey("test").createReadOnlyCopy();
         
         // @ts-ignore
-        expect(() => dynamic.delete()).toThrow()
+        expect(() => dynamic.delete()).toThrow();
         
       });
       
