@@ -69,8 +69,8 @@ export class DataStore<StateInterface, Mutators extends MutatorCreators<StateInt
       }
       else
       {
-        if (reducerMap[key]) throw `Cannot add reducer. Action type already registered: ${key}`;
         const mutator = mutatorCreator(this.treedux);
+        if (reducerMap[mutator.getType()]) throw `Cannot add reducer. Action type already registered: ${key}`;
         reducerMap[mutator.getType()] = (...args) => {
           return mutator.reduce.call(mutator, ...args);
         };
