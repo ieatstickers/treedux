@@ -10,5 +10,5 @@ export interface StateNodeInterface<Type, StateInterface>
   
   subscribe(callback: (data: Type) => void): () => void;
   
-  createReadOnlyCopy(): ReadOnlyRecursiveStateNode<Type, StateInterface>;
+  toReadOnly(): ReadOnlyRecursiveStateNode<Type, StateInterface>;
 }

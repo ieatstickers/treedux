@@ -351,7 +351,7 @@ describe("Treedux", () => {
           test: TestDataStore.create()
         });
         
-        expect(treedux.state.test.createReadOnlyCopy().get()).toEqual(initialState);
+        expect(treedux.state.test.toReadOnly().get()).toEqual(initialState);
       });
       
       it("returns correct state for dynamically accessed nodes", () => {
@@ -362,7 +362,7 @@ describe("Treedux", () => {
         const node = treedux
           .state
           .test
-          .createReadOnlyCopy()
+          .toReadOnly()
           .dynamicObject
           .byKey("example")
           .byKey("exampleNested");
@@ -383,9 +383,9 @@ describe("Treedux", () => {
         const nameSubscriber = jest.fn();
         const ageSubscriber = jest.fn();
         
-        const userUnsubscribe = treedux.state.test.user.createReadOnlyCopy().subscribe(userSubscriber);
-        const nameUnsubscribe = treedux.state.test.user.name.createReadOnlyCopy().subscribe(nameSubscriber);
-        const ageUnsubscribe = treedux.state.test.user.age.createReadOnlyCopy().subscribe(ageSubscriber);
+        const userUnsubscribe = treedux.state.test.user.toReadOnly().subscribe(userSubscriber);
+        const nameUnsubscribe = treedux.state.test.user.name.toReadOnly().subscribe(nameSubscriber);
+        const ageUnsubscribe = treedux.state.test.user.age.toReadOnly().subscribe(ageSubscriber);
         
         treedux.state.test.user.set({ name: "Jane Doe", age: 29 }).dispatch();
         treedux.state.test.user.name.set("John Doe").dispatch();
@@ -411,7 +411,7 @@ describe("Treedux", () => {
         // Ensure the node is undefined to begin with
         expect(node.get()).toEqual(undefined);
         
-        const unsubscribe = node.createReadOnlyCopy().subscribe(subscriber);
+        const unsubscribe = node.toReadOnly().subscribe(subscriber);
         
         node.set(false).dispatch();
         
@@ -441,7 +441,7 @@ describe("Treedux", () => {
           test: TestDataStore.create()
         });
         
-        expect(() => treedux.state.test.dynamicObject.createReadOnlyCopy().byKey(undefined)).toThrow();
+        expect(() => treedux.state.test.dynamicObject.toReadOnly().byKey(undefined)).toThrow();
       });
       
     });
@@ -453,7 +453,7 @@ describe("Treedux", () => {
           test: TestDataStore.create()
         });
         
-        const incrementable = treedux.state.test.incrementableNumeric.createReadOnlyCopy();
+        const incrementable = treedux.state.test.incrementableNumeric.toReadOnly();
         
         // Mutator methods shouldn't be type-hinted anyway (hence the ts-ignores)
         // but we want to test that it's not just types that are preventing mutations (methods should not be available)
@@ -462,7 +462,7 @@ describe("Treedux", () => {
         // @ts-ignore
         expect(() => incrementable.increment()).toThrow();
         
-        const dynamic = treedux.state.test.dynamicObject.byKey("example").byKey("test").createReadOnlyCopy();
+        const dynamic = treedux.state.test.dynamicObject.byKey("example").byKey("test").toReadOnly();
         
         // @ts-ignore
         expect(() => dynamic.delete()).toThrow();
@@ -474,7 +474,7 @@ describe("Treedux", () => {
           test: TestDataStore.create()
         });
         
-        const response = treedux.state.test.createReadOnlyCopy()[Symbol("invalid")];
+        const response = treedux.state.test.toReadOnly()[Symbol("invalid")];
         
         expect(response).toBe(null);
       });

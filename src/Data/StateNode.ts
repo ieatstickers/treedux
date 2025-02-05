@@ -121,7 +121,7 @@ export class StateNode<StateNodeType, ParentStateNodeType, StateInterface, Optio
     );
   }
   
-  public createReadOnlyCopy(): ReadOnlyRecursiveStateNode<StateNodeType, StateInterface>
+  public toReadOnly(): ReadOnlyRecursiveStateNode<StateNodeType, StateInterface>
   {
     return ReadOnlyStateNode.create({ keyPath: this.keyPath }, this.treedux) as unknown as ReadOnlyRecursiveStateNode<StateNodeType, StateInterface>;
   }
