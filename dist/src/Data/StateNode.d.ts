@@ -27,7 +27,7 @@ export declare class StateNode<StateNodeType, ParentStateNodeType, StateInterfac
     delete(): Action<{
         keyPath: Array<string>;
     }>;
-    createReadOnlyCopy(): ReadOnlyRecursiveStateNode<StateNodeType, StateInterface>;
+    toReadOnly(): ReadOnlyRecursiveStateNode<StateNodeType, StateInterface>;
     private createProxy;
     private getMutatorMethod;
 }
