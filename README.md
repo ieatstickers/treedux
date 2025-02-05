@@ -290,3 +290,17 @@ treedux
   .dispatch();
 
 ```
+
+## 6. Read Only
+
+Sometimes there are instances where you might want to expose state to another part of your application, but you don't want it to be modified. In these cases, you can use the `toReadOnly()` method to create a read-only version of any node. It will include the regular `get()`, `subscribe()` and `byKey()` methods but will not include `set()`, `delete()` or any custom mutator methods. You will also be able to continue to traverse through the state tree after calling `toReadOnly()` but any subsequent nodes will also be read-only. 
+
+```typescript
+const readOnlyNode = treedux
+  .state
+  .user
+  .preferences
+  .toReadOnly();
+
+const value = readOnlyNode.get();
+```
