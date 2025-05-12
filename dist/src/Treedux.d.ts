@@ -4,6 +4,7 @@ import { DefaultDataStoreMap } from "./Type/DefaultDataStoreMap";
 export declare class Treedux<DataStoreMap extends DefaultDataStoreMap = DefaultDataStoreMap> {
     private readonly storeInstance;
     private readonly dataStores;
+    private readonly subscribers;
     protected constructor(dataStores: DataStoreMap, options?: {
         initialState?: any;
     });
@@ -14,6 +15,7 @@ export declare class Treedux<DataStoreMap extends DefaultDataStoreMap = DefaultD
         [K in keyof DataStoreMap]: DataStoreMap[K]["state"];
     };
     getState(): any;
-    subscribe(listener: () => void): Unsubscribe;
+    subscribe(subscriber: () => void): Unsubscribe;
     dispatch(...actions: Array<Action<any>>): void;
+    protected notifySubscribers(): void;
 }
