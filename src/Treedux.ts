@@ -20,6 +20,7 @@ export class Treedux<DataStoreMap extends DefaultDataStoreMap = DefaultDataStore
 {
   private readonly storeInstance: EnhancedStore;
   private readonly dataStores: DataStoreMap;
+  private readonly subscribers: Set<() => void> = new Set();
   
   protected constructor(
     dataStores: DataStoreMap,
@@ -74,6 +75,8 @@ export class Treedux<DataStoreMap extends DefaultDataStoreMap = DefaultDataStore
       reducer: rootReducer,
       preloadedState: options.initialState
     });
+    
+    this.storeInstance.subscribe(() => this.notifySubscribers());
   }
   
   public static init<DataStoreMap extends DefaultDataStoreMap>(
@@ -101,9 +104,10 @@ export class Treedux<DataStoreMap extends DefaultDataStoreMap = DefaultDataStore
     return this.storeInstance.getState();
   }
   
-  public subscribe(listener: () => void): Unsubscribe
+  public subscribe(subscriber: () => void): Unsubscribe
   {
-    return this.storeInstance.subscribe(listener);
+    this.subscribers.add(subscriber);
+    return () => this.subscribers.delete(subscriber);
   }
   
   public dispatch(...actions: Array<Action<any>>): void
@@ -112,5 +116,10 @@ export class Treedux<DataStoreMap extends DefaultDataStoreMap = DefaultDataStore
       type: DefaultActionEnum.BATCH,
       payload: actions.map(action => action.serialize())
     });
+  }
+  
+  protected notifySubscribers(): void
+  {
+    this.subscribers.forEach(subscriber => subscriber());
   }
 }
