@@ -1,10 +1,10 @@
-
-export { Treedux } from './src/Treedux';
-export { DataStore } from './src/Data/DataStore';
-export { AbstractMutator } from './src/Data/AbstractMutator';
-export { Action } from './src/Data/Action';
-export { StateNode } from './src/Data/StateNode';
-export { RecursiveStateNode } from './src/Type/RecursiveStateNode';
-export { DefaultDataStoreMap } from './src/Type/DefaultDataStoreMap';
-export { DefaultActionEnum } from './src/Enum/DefaultActionEnum';
-export { StateNodeInterface } from './src/Type/StateNodeInterface';
+export { Treedux } from "./src/Treedux";
+export { DataStore } from "./src/Data/DataStore";
+export { AbstractMutator } from "./src/Data/AbstractMutator";
+export { Action } from "./src/Data/Action";
+export { StateNode } from "./src/Data/StateNode";
+export { DefaultActionEnum } from "./src/Enum/DefaultActionEnum";
+export type { RecursiveStateNode } from "./src/Type/RecursiveStateNode";
+export type { DefaultDataStoreMap } from "./src/Type/DefaultDataStoreMap";
+export type { StateNodeInterface } from "./src/Type/StateNodeInterface";
+export type { ReadOnlyStateNodeInterface } from "./src/Type/ReadOnlyStateNodeInterface";
