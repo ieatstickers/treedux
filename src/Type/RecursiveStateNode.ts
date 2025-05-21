@@ -15,7 +15,7 @@ export type RecursiveStateNode<StateNodeType, ParentStateNodeType, StateInterfac
   & (
   IsPrimitive<StateNodeType> extends true
     ? {}
-    : DynamicallyTraversable<StateNodeType, StateInterface, StateNodeMutatorCreators>
+    : DynamicallyTraversable<NonNullable<StateNodeType>, StateInterface, StateNodeMutatorCreators>
   )
   & (
   string extends keyof ParentStateNodeType

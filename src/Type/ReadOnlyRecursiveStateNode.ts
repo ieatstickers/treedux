@@ -11,7 +11,7 @@ export type ReadOnlyRecursiveStateNode<StateNodeType, StateInterface> =
   & (
   IsPrimitive<StateNodeType> extends true
     ? {}
-    : ReadOnlyDynamicallyTraversable<StateNodeType, StateInterface>
+    : ReadOnlyDynamicallyTraversable<NonNullable<StateNodeType>, StateInterface>
   )
   & {
   [K in OwnKeys<NonNullable<StateNodeType>>]: ReadOnlyRecursiveStateNode<
