@@ -25,12 +25,12 @@ export type RecursiveStateNode<StateNodeType, ParentStateNodeType, StateInterfac
       : {}
   )
   & {
-  [K in OwnKeys<StateNodeType>]: RecursiveStateNode<
-    StateNodeType[K],
+  [K in OwnKeys<NonNullable<StateNodeType>>]: RecursiveStateNode<
+    NonNullable<StateNodeType>[K],
     StateNodeType,
     StateInterface,
-    ExtractMutatorCreators<StateNodeType, StateInterface, StateNodeMutatorCreators, K> extends MutatorCreators<StateNodeType[K], StateInterface>
-      ? ExtractMutatorCreators<StateNodeType, StateInterface, StateNodeMutatorCreators, K>
-      : MutatorCreators<StateNodeType[K], StateInterface>
+    ExtractMutatorCreators<NonNullable<StateNodeType>, StateInterface, StateNodeMutatorCreators, K> extends MutatorCreators<NonNullable<StateNodeType>[K], StateInterface>
+      ? ExtractMutatorCreators<NonNullable<StateNodeType>, StateInterface, StateNodeMutatorCreators, K>
+      : MutatorCreators<NonNullable<StateNodeType>[K], StateInterface>
   >;
 };

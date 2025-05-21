@@ -14,8 +14,8 @@ export type ReadOnlyRecursiveStateNode<StateNodeType, StateInterface> =
     : ReadOnlyDynamicallyTraversable<StateNodeType, StateInterface>
   )
   & {
-  [K in OwnKeys<StateNodeType>]: ReadOnlyRecursiveStateNode<
-    StateNodeType[K],
+  [K in OwnKeys<NonNullable<StateNodeType>>]: ReadOnlyRecursiveStateNode<
+    NonNullable<StateNodeType>[K],
     StateInterface
   >;
 };
