@@ -11,6 +11,6 @@ export declare class Action<Payload> {
     dispatch(): void;
     serialize(): {
         type: string;
-        payload?: Payload;
+        payload: Payload;
     };
 }

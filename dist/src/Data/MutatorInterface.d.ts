@@ -1,7 +1,6 @@
 import { Action } from "./Action";
-import { Action as ReduxAction } from "@reduxjs/toolkit";
-export interface MutatorInterface<State> {
+export interface MutatorInterface<State, Payload = any> {
     getType(): string;
-    getAction(...args: any): Action<any>;
-    reduce(state: State, action: ReduxAction): void;
+    getAction(...args: any): Action<Payload>;
+    reduce(state: State, action: ReturnType<Action<Payload>["serialize"]>): void;
 }
