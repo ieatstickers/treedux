@@ -1,9 +1,8 @@
 import { Treedux } from "../Treedux";
 import { MutatorInterface } from "./MutatorInterface";
 import { Action } from "./Action";
-import { Action as ReduxAction } from "redux";
 
-export abstract class AbstractMutator<State> implements MutatorInterface<State>
+export abstract class AbstractMutator<State, Payload = any> implements MutatorInterface<State, Payload>
 {
   protected treedux: Treedux;
   
@@ -14,7 +13,7 @@ export abstract class AbstractMutator<State> implements MutatorInterface<State>
   
   public abstract getType(): string;
   
-  public abstract getAction(...args: any): Action<any>;
+  public abstract getAction(...args: any): Action<Payload>;
   
-  public abstract reduce(state: State, action: ReduxAction): void;
+  public abstract reduce(state: State, action: ReturnType<Action<Payload>["serialize"]>): void;
 }

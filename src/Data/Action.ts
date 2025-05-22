@@ -26,7 +26,7 @@ export class Action<Payload>
     this.treedux.dispatch(this);
   }
   
-  public serialize(): { type: string, payload?: Payload }
+  public serialize(): { type: string, payload: Payload }
   {
     return { type: this.type, payload: this.payload };
   }
