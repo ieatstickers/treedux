@@ -4,20 +4,36 @@
   "description": "Lightweight wrapper for Redux providing fully type-hinted state tree traversal out of the box",
   "author": "Mike Burke",
   "license": "MIT",
-  "main": "dist/index.cjs",
-  "module": "dist/index.mjs",
+  "main": "dist/_cjs/index.js",
+  "module": "dist/_esm/index.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/_esm/index.js",
+      "require": "./dist/_cjs/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
   "files": [
     "dist/**/*"
   ],
   "scripts": {
-    "build": "webpack",
+    "clean": "rm -rf dist",
+    "build:types": "tsc",
+    "build:cjs": "babel src --extensions .ts --out-dir dist/_cjs --plugins=@babel/plugin-transform-modules-commonjs",
+    "build:esm": "babel src --extensions .ts --out-dir dist/_esm",
+    "build": "npm run clean && npm run build:types && npm run build:cjs && npm run build:esm",
     "test": "jest"
   },
   "peerDependencies": {
     "@reduxjs/toolkit": "^2.2.3"
   },
   "devDependencies": {
+    "@babel/cli": "^7.27.2",
+    "@babel/plugin-transform-modules-commonjs": "^7.27.1",
+    "@babel/preset-env": "^7.27.2",
+    "@babel/preset-typescript": "^7.27.1",
+    "@babel/runtime": "^7.27.1",
     "@reduxjs/toolkit": "^2.2.3",
     "@types/jest": "^29.5.12",
     "@types/node": "^20.12.7",

@@ -1,14 +1,15 @@
 {
   "compilerOptions": {
-    "target": "es6",
-    "module": "ES6",
+    "target": "ESNext",
+    "module": "ESNext",
     "moduleResolution": "node",
     "declaration": true,
     "outDir": "./dist",
     "lib": [
       "dom",
       "es2015"
-    ]
+    ],
+    "emitDeclarationOnly": true
   },
   "exclude": [
     "node_modules",
@@ -16,6 +17,6 @@
   ],
   "include": [],
   "files": [
-    "index.ts"
+    "src/index.ts"
   ]
 }
