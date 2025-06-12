@@ -348,4 +348,18 @@ describe("Treedux", () => {
       });
     });
   });
+  describe("Treedux", () => {
+    describe("dispatch", () => {
+      it("correctly batches multiple actions", () => {
+        const treedux = _Treedux.Treedux.init({
+          test: TestDataStore.create()
+        });
+        const subscriber = jest.fn();
+        treedux.subscribe(subscriber);
+        treedux.dispatch(treedux.state.test.user.name.set("First"), treedux.state.test.user.name.set("Second"), treedux.state.test.user.name.set("Third"));
+        expect(subscriber).toHaveBeenCalledTimes(1);
+        expect(treedux.state.test.user.name.get()).toBe("Third");
+      });
+    });
+  });
 });
