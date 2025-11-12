@@ -10,7 +10,7 @@ import { Deletable } from "./Deletable";
 // Recursive type to represent a node in the state tree. It type-hints for the default methods available on every state
 // node to get, set, subscribe etc. as well as any custom mutator methods that have been passed in. It also type-hints
 // for any child nodes in the tree, so you can continually traverse down.
-export type RecursiveStateNode<StateNodeType, ParentStateNodeType, StateInterface, StateNodeMutatorCreators extends MutatorCreators<StateNodeType, StateInterface> = {}> =
+export type RecursiveStateNode<StateNodeType, ParentStateNodeType, StateInterface, StateNodeMutatorCreators extends MutatorCreators<StateNodeType, StateInterface> | undefined = {}> =
   StateNodeWithMutators<StateNodeType, StateInterface, MutatorMethods<StateInterface, StateNodeMutatorCreators>>
   & (
   IsPrimitive<StateNodeType> extends true
