@@ -8,3 +8,4 @@ export type { RecursiveStateNode } from "./Type/RecursiveStateNode";
 export type { DefaultDataStoreMap } from "./Type/DefaultDataStoreMap";
 export type { StateNodeInterface } from "./Type/StateNodeInterface";
 export type { ReadOnlyStateNodeInterface } from "./Type/ReadOnlyStateNodeInterface";
+export type { ReadOnlyRecursiveStateNode } from "./Type/ReadOnlyRecursiveStateNode";
