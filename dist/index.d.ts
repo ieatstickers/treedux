@@ -9,3 +9,4 @@ export type { DefaultDataStoreMap } from "./Type/DefaultDataStoreMap";
 export type { StateNodeInterface } from "./Type/StateNodeInterface";
 export type { ReadOnlyStateNodeInterface } from "./Type/ReadOnlyStateNodeInterface";
 export type { ReadOnlyRecursiveStateNode } from "./Type/ReadOnlyRecursiveStateNode";
+export type { MutatorCreator } from "./Type/MutatorCreator";
