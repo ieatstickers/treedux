@@ -17,6 +17,7 @@ export class Treedux<DataStoreMap extends DefaultDataStoreMap = DefaultDataStore
 {
   private dataStores: DataStoreMap;
   private storeInstance: ToolkitStore;
+  private readonly nodeCache: Map<string, any> = new Map();
   
   protected constructor(dataStores: DataStoreMap, options?: { initialState?: any })
   {
@@ -99,6 +100,16 @@ export class Treedux<DataStoreMap extends DefaultDataStoreMap = DefaultDataStore
     return this.storeInstance.subscribe(callback);
   }
   
+  public getCachedNode(cacheKey: string): any | undefined
+  {
+    return this.nodeCache.get(cacheKey);
+  }
+
+  public setCachedNode(cacheKey: string, node: any): void
+  {
+    this.nodeCache.set(cacheKey, node);
+  }
+
   public dispatch(...actions: Array<Action>): void
   {
     if (!this.storeInstance) throw "Cannot dispatch action. Redux store has not been initialized.";

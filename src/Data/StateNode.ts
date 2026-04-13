@@ -121,30 +121,36 @@ export class StateNode<T>
       get(target, property: string | symbol)
       {
         const currentValue = target.get();
-        
-        // If accessing a property of the data object, return a new StateNode
+
+        // If accessing a property of the data object, return a cached StateNode
         if (
           typeof property === 'string'
           && Objects.isObject(currentValue)
           && property in currentValue
         )
         {
-          // const value = currentValue[prop as keyof T] as T;
-          
-          return StateNode.create(
+          const childKeyPath = target.keyPath.concat(property);
+          const cacheKey = childKeyPath.join('.');
+
+          const cached = target.treedux.getCachedNode(cacheKey);
+          if (cached) return cached;
+
+          const node = StateNode.create(
             {
-              keyPath: target.keyPath.concat(property)
+              keyPath: childKeyPath
             },
             target.treedux
           );
-          
+
+          target.treedux.setCachedNode(cacheKey, node);
+          return node;
         }
         // Else if accessing a method of the StateNode, bind it to the StateNode
         else if (typeof target[property] === 'function')
         {
           return target[property].bind(target);
         }
-        
+
         // Default to returning the property (even if it doesn't exist)
         return target[property];
       },
