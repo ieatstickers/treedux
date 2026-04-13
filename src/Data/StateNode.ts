@@ -1,3 +1,4 @@
+import equal from "fast-deep-equal";
 import { DefaultActionEnum } from "../Enum/DefaultActionEnum";
 import { Treedux } from "../Treedux";
 import { Objects } from "../Utility/Objects";
@@ -100,10 +101,10 @@ export class StateNode<T>
   public subscribe(callback: (data: T) => void): () => void
   {
     let currentValue = this.lastKnownValue;
-    
+
     return this.treedux.subscribe(() => {
       const newValue = this.get();
-      if (JSON.stringify(newValue) === JSON.stringify(currentValue)) return;
+      if (equal(newValue, currentValue)) return;
       currentValue = newValue;
       callback(currentValue);
     })
