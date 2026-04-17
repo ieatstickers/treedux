@@ -9,7 +9,8 @@
       "dom",
       "es2015"
     ],
-    "emitDeclarationOnly": true
+    "emitDeclarationOnly": true,
+    "esModuleInterop": true
   },
   "exclude": [
     "node_modules",

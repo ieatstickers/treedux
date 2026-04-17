@@ -10,6 +10,7 @@ import { ObjectKeys } from "../Type/ObjectKeys";
 import { ObjectPropertyType } from "../Type/ObjectPropertyType";
 import { ReadOnlyRecursiveStateNode } from "../Type/ReadOnlyRecursiveStateNode";
 import { ReadOnlyStateNode } from "./ReadOnlyStateNode";
+import equal from "fast-deep-equal";
 
 type StateNodeOptions<T, StateInterface> = {
   keyPath: Array<string>,
@@ -81,7 +82,7 @@ export class StateNode<StateNodeType, ParentStateNodeType, StateInterface, Optio
 
     return this.treedux.subscribe(() => {
       const newValue = this.get();
-      if (JSON.stringify(newValue) === JSON.stringify(currentValue)) return;
+      if (equal(newValue, currentValue)) return;
       currentValue = newValue;
       callback(currentValue);
     });
