@@ -21,7 +21,7 @@ export class Treedux<DataStoreMap extends DefaultDataStoreMap = DefaultDataStore
   private readonly storeInstance: EnhancedStore;
   private readonly dataStores: DataStoreMap;
   private readonly subscribers: Set<() => void> = new Set();
-  
+
   protected constructor(
     dataStores: DataStoreMap,
     options?: {
@@ -32,7 +32,7 @@ export class Treedux<DataStoreMap extends DefaultDataStoreMap = DefaultDataStore
     this.dataStores = dataStores;
     options = options || {};
     const reducerMap: Partial<ReducerMap<DataStoreMap>> = {};
-    
+
     // For each data store
     for (const key in this.dataStores)
     {
@@ -46,13 +46,13 @@ export class Treedux<DataStoreMap extends DefaultDataStoreMap = DefaultDataStore
           .forEach(([ actionType, reducer ]) => builder.addCase(actionType, reducer));
       });
     }
-    
+
     // Combine all data store reducers to create app reducer
     const appReducer = combineReducers(reducerMap);
-    
+
     // Define root reducer
     const rootReducer = (state: any, action: any) => {
-      
+
       if (action.type === DefaultActionEnum.BATCH)
       {
         return action.payload.reduce(rootReducer, state);
@@ -67,18 +67,18 @@ export class Treedux<DataStoreMap extends DefaultDataStoreMap = DefaultDataStore
         const { keyPath } = action.payload;
         return Objects.setByKeyPath(keyPath, undefined, state);
       }
-      
+
       return appReducer(state, action);
     };
-    
+
     this.storeInstance = configureStore({
       reducer: rootReducer,
       preloadedState: options.initialState
     });
-    
+
     this.storeInstance.subscribe(() => this.notifySubscribers());
   }
-  
+
   public static init<DataStoreMap extends DefaultDataStoreMap>(
     dataStores: DataStoreMap,
     options?: { initialState?: any }
@@ -86,30 +86,30 @@ export class Treedux<DataStoreMap extends DefaultDataStoreMap = DefaultDataStore
   {
     return new Treedux(dataStores, options);
   }
-  
+
   public get state(): { [K in keyof DataStoreMap]: DataStoreMap[K]["state"] }
   {
     const storeObj: { [K in keyof DataStoreMap]?: DataStoreMap[K]["state"] } = {};
-    
+
     for (const key in this.dataStores)
     {
       storeObj[key] = this.dataStores[key].state;
     }
-    
+
     return storeObj as { [K in keyof DataStoreMap]: DataStoreMap[K]["state"] };
   }
-  
+
   public getState(): any
   {
     return this.storeInstance.getState();
   }
-  
+
   public subscribe(subscriber: () => void): Unsubscribe
   {
     this.subscribers.add(subscriber);
     return () => this.subscribers.delete(subscriber);
   }
-  
+
   public dispatch(...actions: Array<Action<any>>): void
   {
     this.storeInstance.dispatch({
@@ -117,7 +117,7 @@ export class Treedux<DataStoreMap extends DefaultDataStoreMap = DefaultDataStore
       payload: actions.map(action => action.serialize())
     });
   }
-  
+
   protected notifySubscribers(): void
   {
     this.subscribers.forEach(subscriber => subscriber());
