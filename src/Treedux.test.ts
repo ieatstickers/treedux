@@ -505,10 +505,10 @@ describe("Treedux", () => {
 
         expect(subscriber).toHaveBeenCalledTimes(1);
         expect(treedux.state.test.user.name.get()).toBe("Third");
-      })
+      });
 
-    })
+    });
 
-  })
+  });
 
 });
