@@ -77,8 +77,8 @@ export class StateNode<StateNodeType, ParentStateNodeType, StateInterface, Optio
   
   public subscribe(callback: (data: StateNodeType) => void): () => void
   {
-    let currentValue = this.lastKnownValue;
-    
+    let currentValue = this.get();
+
     return this.treedux.subscribe(() => {
       const newValue = this.get();
       if (JSON.stringify(newValue) === JSON.stringify(currentValue)) return;
