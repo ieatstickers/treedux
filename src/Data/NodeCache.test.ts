@@ -1,3 +1,4 @@
+import { describe, it, expect } from "vitest";
 import { NodeCache } from "./NodeCache";
 
 describe("NodeCache", () => {

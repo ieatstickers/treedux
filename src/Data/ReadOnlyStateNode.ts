@@ -104,6 +104,15 @@ export class ReadOnlyStateNode<StateNodeType, StateInterface> implements ReadOnl
           },
           self.treedux
         );
+      },
+      // ownKeys and getOwnPropertyDescriptor here to prevent vitest hitting infinite loop when inspecting properties recursively
+      ownKeys()
+      {
+        return [];
+      },
+      getOwnPropertyDescriptor()
+      {
+        return undefined;
       }
     }) as unknown as ReadOnlyRecursiveStateNode<StateNodeType, StateInterface>;
   }

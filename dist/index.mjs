@@ -200,11 +200,17 @@ var ReadOnlyStateNode = class ReadOnlyStateNode {
 		return ReadOnlyStateNode.create({ keyPath: this.keyPath.concat([key.toString()]) }, this.treedux);
 	}
 	createProxy() {
-		return new Proxy(this, { get(self, property) {
-			if (typeof property !== "string") return null;
-			if (typeof self[property] === "function") return self[property].bind(self);
-			return ReadOnlyStateNode.create({ keyPath: self.keyPath.concat(property) }, self.treedux);
-		} });
+		return new Proxy(this, {
+			get(self, property) {
+				if (typeof property !== "string") return null;
+				if (typeof self[property] === "function") return self[property].bind(self);
+				return ReadOnlyStateNode.create({ keyPath: self.keyPath.concat(property) }, self.treedux);
+			},
+			ownKeys() {
+				return [];
+			},
+			getOwnPropertyDescriptor() {}
+		});
 	}
 };
 //#endregion
@@ -276,16 +282,22 @@ var StateNode = class StateNode {
 		return ReadOnlyStateNode.create({ keyPath: this.keyPath }, this.treedux);
 	}
 	createProxy() {
-		return new Proxy(this, { get(self, property) {
-			if (typeof property !== "string") return null;
-			const mutatorMethod = self.getMutatorMethod(property);
-			if (mutatorMethod) return mutatorMethod;
-			if (typeof self[property] === "function") return self[property].bind(self);
-			return StateNode.create({
-				keyPath: self.keyPath.concat(property),
-				mutators: self.mutators && self.mutators[property] ? self.mutators[property] : {}
-			}, self.treedux);
-		} });
+		return new Proxy(this, {
+			get(self, property) {
+				if (typeof property !== "string") return null;
+				const mutatorMethod = self.getMutatorMethod(property);
+				if (mutatorMethod) return mutatorMethod;
+				if (typeof self[property] === "function") return self[property].bind(self);
+				return StateNode.create({
+					keyPath: self.keyPath.concat(property),
+					mutators: self.mutators && self.mutators[property] ? self.mutators[property] : {}
+				}, self.treedux);
+			},
+			ownKeys() {
+				return [];
+			},
+			getOwnPropertyDescriptor() {}
+		});
 	}
 	getMutatorMethod(methodName) {
 		if (!this.mutators || !this.mutators.hasOwnProperty(methodName) || typeof this.mutators[methodName] !== "function") return null;
