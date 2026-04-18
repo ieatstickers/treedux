@@ -157,6 +157,15 @@ export class StateNode<StateNodeType, ParentStateNodeType, StateInterface, Optio
           },
           self.treedux
         );
+      },
+      // ownKeys and getOwnPropertyDescriptor here to prevent vitest hitting infinite loop when inspecting properties recursively
+      ownKeys()
+      {
+        return [];
+      },
+      getOwnPropertyDescriptor()
+      {
+        return undefined;
       }
     }) as unknown as RecursiveStateNode<StateNodeType, ParentStateNodeType, StateInterface, Options["mutators"]>;
   }

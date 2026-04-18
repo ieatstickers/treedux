@@ -1,5 +1,6 @@
 // UserStore.ts
 
+import { describe, it, expect, vi } from "vitest";
 import { DataStore } from "./Data/DataStore";
 import { AbstractMutator } from "./Data/AbstractMutator";
 import { Action } from "./Data/Action";
@@ -210,9 +211,9 @@ describe("Treedux", () => {
           test: TestDataStore.create()
         });
 
-        const userSubscriber = jest.fn();
-        const nameSubscriber = jest.fn();
-        const ageSubscriber = jest.fn();
+        const userSubscriber = vi.fn();
+        const nameSubscriber = vi.fn();
+        const ageSubscriber = vi.fn();
 
         const userUnsubscribe = treedux.state.test.user.subscribe(userSubscriber);
         const nameUnsubscribe = treedux.state.test.user.name.subscribe(nameSubscriber);
@@ -236,7 +237,7 @@ describe("Treedux", () => {
           test: TestDataStore.create()
         });
 
-        const subscriber = jest.fn();
+        const subscriber = vi.fn();
         const node = treedux.state.test.dynamicObject.byKey("test").byKey("exampleKey");
 
         // Ensure the node is undefined to begin with
@@ -379,9 +380,9 @@ describe("Treedux", () => {
           test: TestDataStore.create()
         });
 
-        const userSubscriber = jest.fn();
-        const nameSubscriber = jest.fn();
-        const ageSubscriber = jest.fn();
+        const userSubscriber = vi.fn();
+        const nameSubscriber = vi.fn();
+        const ageSubscriber = vi.fn();
 
         const userUnsubscribe = treedux.state.test.user.toReadOnly().subscribe(userSubscriber);
         const nameUnsubscribe = treedux.state.test.user.name.toReadOnly().subscribe(nameSubscriber);
@@ -405,7 +406,7 @@ describe("Treedux", () => {
           test: TestDataStore.create()
         });
 
-        const subscriber = jest.fn();
+        const subscriber = vi.fn();
         const node = treedux.state.test.dynamicObject.byKey("test").byKey("exampleKey");
 
         // Ensure the node is undefined to begin with
@@ -551,7 +552,7 @@ describe("Treedux", () => {
           test: TestDataStore.create()
         });
 
-        const subscriber = jest.fn();
+        const subscriber = vi.fn();
 
         treedux.subscribe(subscriber);
 
