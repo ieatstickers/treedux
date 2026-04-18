@@ -1,6 +1,6 @@
-import { IsPOJO } from "./IsPojo";
-import { MutatorCreator } from "./MutatorCreator";
-import { MutatorCreators } from "./MutatorCreators";
+import { IsPOJO } from "./is-pojo";
+import { MutatorCreator } from "./mutator-creator";
+import { MutatorCreators } from "./mutator-creators";
 
 // Although it is MutatorCreators that are passed to a state node, it's actually the getAction() method of each mutator
 // that we want to type-hint for when traversing through a Treedux state tree. This utility type parses the MutatorCreators

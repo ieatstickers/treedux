@@ -1,4 +1,4 @@
-import { IsPrimitive } from "./IsPrimitive";
+import { IsPrimitive } from "./is-primitive";
 
 export type ObjectPropertyType<T, K> = IsPrimitive<T> extends true
   ? void
