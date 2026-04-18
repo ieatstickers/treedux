@@ -7,7 +7,8 @@
     "outDir": "./dist",
     "lib": [
       "dom",
-      "es2015"
+      "es2015",
+      "es2021.weakref"
     ],
     "emitDeclarationOnly": true,
     "esModuleInterop": true

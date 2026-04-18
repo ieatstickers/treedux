@@ -1,5 +1,5 @@
 import { DefaultActionEnum } from "../Enum/DefaultActionEnum";
-import { Treedux } from "../Treedux";
+import { NODE_CACHE, Treedux } from "../Treedux";
 import { Objects } from "../Utility/Objects";
 import { Action } from "./Action";
 import { RecursiveStateNode } from "../Type/RecursiveStateNode";
@@ -36,7 +36,14 @@ export class StateNode<StateNodeType, ParentStateNodeType, StateInterface, Optio
 
   public static create<StateNodeType, ParentStateNodeType, StateInterface, Options extends StateNodeOptions<StateNodeType, StateInterface> = StateNodeOptions<StateNodeType, StateInterface>>(options: StateNodeOptions<StateNodeType, StateInterface>, treedux: Treedux): RecursiveStateNode<StateNodeType, ParentStateNodeType, StateInterface, Options["mutators"]>
   {
-    return (new StateNode<StateNodeType, ParentStateNodeType, StateInterface, Options>(options, treedux)).createProxy();
+    const cache = treedux[NODE_CACHE];
+
+    const existing = cache.get<RecursiveStateNode<StateNodeType, ParentStateNodeType, StateInterface, Options["mutators"]>>(options.keyPath);
+    if (existing) return existing;
+
+    const node = (new StateNode<StateNodeType, ParentStateNodeType, StateInterface, Options>(options, treedux)).createProxy();
+    cache.set(options.keyPath, node);
+    return node;
   }
 
   public get(): StateNodeType

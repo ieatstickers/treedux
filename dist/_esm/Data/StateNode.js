@@ -5,9 +5,12 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.StateNode = void 0;
 var _DefaultActionEnum = require("../Enum/DefaultActionEnum");
+var _Treedux = require("../Treedux");
 var _Objects = require("../Utility/Objects");
 var _Action = require("./Action");
 var _ReadOnlyStateNode = require("./ReadOnlyStateNode");
+var _fastDeepEqual = _interopRequireDefault(require("fast-deep-equal"));
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 class StateNode {
   keyPath = [];
   constructor(options, treedux) {
@@ -16,7 +19,12 @@ class StateNode {
     this.mutators = options.mutators;
   }
   static create(options, treedux) {
-    return new StateNode(options, treedux).createProxy();
+    const cache = treedux[_Treedux.NODE_CACHE];
+    const existing = cache.get(options.keyPath);
+    if (existing) return existing;
+    const node = new StateNode(options, treedux).createProxy();
+    cache.set(options.keyPath, node);
+    return node;
   }
   get() {
     const keys = [...this.keyPath];
@@ -46,10 +54,10 @@ class StateNode {
     }, this.treedux);
   }
   subscribe(callback) {
-    let currentValue = this.lastKnownValue;
+    let currentValue = this.get();
     return this.treedux.subscribe(() => {
       const newValue = this.get();
-      if (JSON.stringify(newValue) === JSON.stringify(currentValue)) return;
+      if ((0, _fastDeepEqual.default)(newValue, currentValue)) return;
       currentValue = newValue;
       callback(currentValue);
     });

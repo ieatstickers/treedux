@@ -20,10 +20,10 @@
   "scripts": {
     "clean": "rm -rf dist",
     "build:types": "tsc",
-    "build:cjs": "babel src --extensions .ts --out-dir dist/_cjs --plugins=@babel/plugin-transform-modules-commonjs",
-    "build:esm": "babel src --extensions .ts --out-dir dist/_esm",
+    "build:cjs": "babel src --extensions .ts --ignore '**/*.test.ts' --out-dir dist/_cjs --plugins=@babel/plugin-transform-modules-commonjs",
+    "build:esm": "babel src --extensions .ts --ignore '**/*.test.ts' --out-dir dist/_esm",
     "build": "npm run clean && npm run build:types && npm run build:cjs && npm run build:esm",
-    "test": "jest"
+    "test": "node --expose-gc node_modules/.bin/jest"
   },
   "peerDependencies": {
     "@reduxjs/toolkit": "^2.2.3"
