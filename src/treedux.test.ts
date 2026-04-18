@@ -310,6 +310,21 @@ describe("Treedux", () => {
 
     });
 
+    describe("proxy traps", () => {
+
+      it("ownKeys returns [] and getOwnPropertyDescriptor returns undefined", () => {
+        const treedux = Treedux.init({
+          test: TestDataStore.create()
+        });
+
+        const node = treedux.state.test.user;
+
+        expect(Object.keys(node)).toEqual([]);
+        expect(Object.getOwnPropertyDescriptor(node, "name")).toBeUndefined();
+      });
+
+    });
+
     describe("custom mutators", () => {
 
       it("mutators registered in data store and type-hinted and perform the ", () => {
@@ -443,6 +458,21 @@ describe("Treedux", () => {
         });
 
         expect(() => treedux.state.test.dynamicObject.toReadOnly().byKey(undefined)).toThrow();
+      });
+
+    });
+
+    describe("proxy traps", () => {
+
+      it("ownKeys returns [] and getOwnPropertyDescriptor returns undefined", () => {
+        const treedux = Treedux.init({
+          test: TestDataStore.create()
+        });
+
+        const node = treedux.state.test.user.toReadOnly();
+
+        expect(Object.keys(node)).toEqual([]);
+        expect(Object.getOwnPropertyDescriptor(node, "name")).toBeUndefined();
       });
 
     });
