@@ -1,4 +1,4 @@
-import { Treedux } from "../treeduxx";
+import { Treedux } from "../treedux";
 import { MutatorInterface } from "./mutator-interface";
 import { Action } from "./action";
 

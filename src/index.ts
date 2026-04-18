@@ -1,4 +1,4 @@
-export { Treedux } from "./treeduxx";
+export { Treedux } from "./treedux";
 export { DataStore } from "./data/data-store";
 export { AbstractMutator } from "./data/abstract-mutator";
 export { Action } from "./data/action";

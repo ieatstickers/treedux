@@ -1,4 +1,4 @@
-import { Treedux } from "../treeduxx";
+import { Treedux } from "../treedux";
 import { StateNode } from "./state-node";
 import { MutatorCreators } from "../Type/MutatorCreators";
 import { RecursiveStateNode } from "../Type/RecursiveStateNode";

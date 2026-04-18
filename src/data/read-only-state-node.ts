@@ -1,4 +1,4 @@
-import { READ_ONLY_NODE_CACHE, Treedux } from "../treeduxx";
+import { READ_ONLY_NODE_CACHE, Treedux } from "../treedux";
 import { Objects } from "../utility/objects";
 import { ObjectKeys } from "../Type/ObjectKeys";
 import { ObjectPropertyType } from "../Type/ObjectPropertyType";
