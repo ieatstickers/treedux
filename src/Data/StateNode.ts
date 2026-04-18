@@ -1,4 +1,4 @@
-import { DefaultActionEnum } from "../Enum/DefaultActionEnum";
+import { DefaultActionEnum } from "../Enum/default-action-enum";
 import { NODE_CACHE, Treedux } from "../Treedux";
 import { Objects } from "../utility/objects";
 import { Action } from "./Action";

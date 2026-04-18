@@ -3,7 +3,7 @@ export { DataStore } from "./Data/DataStore";
 export { AbstractMutator } from "./Data/AbstractMutator";
 export { Action } from "./Data/Action";
 export { StateNode } from "./Data/StateNode";
-export { DefaultActionEnum } from "./Enum/DefaultActionEnum";
+export { DefaultActionEnum } from "./Enum/default-action-enum";
 export type { RecursiveStateNode } from "./Type/RecursiveStateNode";
 export type { DefaultDataStoreMap } from "./Type/DefaultDataStoreMap";
 export type { StateNodeInterface } from "./Type/StateNodeInterface";

@@ -7,7 +7,7 @@ import {
   Unsubscribe
 } from "@reduxjs/toolkit";
 import { Action } from "./Data/Action";
-import { DefaultActionEnum } from "./Enum/DefaultActionEnum";
+import { DefaultActionEnum } from "./Enum/default-action-enum";
 import { Objects } from "./utility/objects";
 import { DefaultDataStoreMap } from "./Type/DefaultDataStoreMap";
 import { NodeCache } from "./Data/NodeCache";
