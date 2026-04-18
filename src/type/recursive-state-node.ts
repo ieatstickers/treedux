@@ -1,11 +1,11 @@
-import { MutatorCreators } from "./MutatorCreators";
-import { StateNodeWithMutators } from "./StateNodeWithMutators";
-import { OwnKeys } from "./OwnKeys";
-import { MutatorMethods } from "./MutatorMethods";
-import { IsPrimitive } from "./IsPrimitive";
-import { ExtractMutatorCreators } from "./ExtractMutatorCreators";
-import { DynamicallyTraversable } from "./DynamicallyTraversable";
-import { Deletable } from "./Deletable";
+import { MutatorCreators } from "./mutator-creators";
+import { StateNodeWithMutators } from "./state-node-with-mutators";
+import { OwnKeys } from "./own-keys";
+import { MutatorMethods } from "./mutator-methods";
+import { IsPrimitive } from "./is-primitive";
+import { ExtractMutatorCreators } from "./extract-mutator-creators";
+import { DynamicallyTraversable } from "./dynamically-traversable";
+import { Deletable } from "./deletable";
 
 // Recursive type to represent a node in the state tree. It type-hints for the default methods available on every state
 // node to get, set, subscribe etc. as well as any custom mutator methods that have been passed in. It also type-hints

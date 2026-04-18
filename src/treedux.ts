@@ -6,11 +6,11 @@ import {
   EnhancedStore,
   Unsubscribe
 } from "@reduxjs/toolkit";
-import { Action } from "./Data/Action";
-import { DefaultActionEnum } from "./Enum/DefaultActionEnum";
-import { Objects } from "./Utility/Objects";
-import { DefaultDataStoreMap } from "./Type/DefaultDataStoreMap";
-import { NodeCache } from "./Data/NodeCache";
+import { Action } from "./data/action";
+import { DefaultActionEnum } from "./enum/default-action-enum";
+import { Objects } from "./utility/objects";
+import { DefaultDataStoreMap } from "./type/default-data-store-map";
+import { NodeCache } from "./data/node-cache";
 
 // Reducer map for Redux store
 type ReducerMap<DataStoreMap extends DefaultDataStoreMap> = {

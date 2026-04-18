@@ -1,6 +1,6 @@
 import { combineReducers, configureStore, createReducer } from "@reduxjs/toolkit";
 import equal from "fast-deep-equal";
-//#region src/Enum/DefaultActionEnum.ts
+//#region src/enum/default-action-enum.ts
 let DefaultActionEnum = /* @__PURE__ */ function(DefaultActionEnum) {
 	DefaultActionEnum["BATCH"] = "__BATCH__";
 	DefaultActionEnum["SET_BY_KEY_PATH"] = "__SET_BY_KEY_PATH__";
@@ -8,7 +8,7 @@ let DefaultActionEnum = /* @__PURE__ */ function(DefaultActionEnum) {
 	return DefaultActionEnum;
 }({});
 //#endregion
-//#region src/Utility/Objects.ts
+//#region src/utility/objects.ts
 var Objects = class {
 	static isObject(value) {
 		return typeof value === "object" && value !== null;
@@ -40,7 +40,7 @@ var Objects = class {
 	}
 };
 //#endregion
-//#region src/Data/NodeCache.ts
+//#region src/data/node-cache.ts
 var NodeCache = class {
 	cache = /* @__PURE__ */ new Map();
 	registry = new FinalizationRegistry((key) => {
@@ -59,7 +59,7 @@ var NodeCache = class {
 	}
 };
 //#endregion
-//#region src/Treedux.ts
+//#region src/treedux.ts
 const NODE_CACHE = Symbol("treedux.node_cache");
 const READ_ONLY_NODE_CACHE = Symbol("treedux.read_only_node_cache");
 var Treedux = class Treedux {
@@ -131,7 +131,7 @@ var Treedux = class Treedux {
 	}
 };
 //#endregion
-//#region src/Data/Action.ts
+//#region src/data/action.ts
 var Action = class Action {
 	treedux;
 	type;
@@ -155,7 +155,7 @@ var Action = class Action {
 	}
 };
 //#endregion
-//#region src/Data/ReadOnlyStateNode.ts
+//#region src/data/read-only-state-node.ts
 var ReadOnlyStateNode = class ReadOnlyStateNode {
 	treedux;
 	lastKnownValue;
@@ -214,7 +214,7 @@ var ReadOnlyStateNode = class ReadOnlyStateNode {
 	}
 };
 //#endregion
-//#region src/Data/StateNode.ts
+//#region src/data/state-node.ts
 var StateNode = class StateNode {
 	treedux;
 	lastKnownValue;
@@ -307,7 +307,7 @@ var StateNode = class StateNode {
 	}
 };
 //#endregion
-//#region src/Data/DataStore.ts
+//#region src/data/data-store.ts
 var DataStore = class DataStore {
 	KEY;
 	initialState;
@@ -354,7 +354,7 @@ var DataStore = class DataStore {
 	}
 };
 //#endregion
-//#region src/Data/AbstractMutator.ts
+//#region src/data/abstract-mutator.ts
 var AbstractMutator = class {
 	treedux;
 	constructor(treedux) {

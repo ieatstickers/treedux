@@ -1,6 +1,6 @@
-import { MutatorCreator } from "./MutatorCreator";
-import { IsPOJO } from "./IsPojo";
-import { OwnKeys } from "./OwnKeys";
+import { MutatorCreator } from "./mutator-creator";
+import { IsPOJO } from "./is-pojo";
+import { OwnKeys } from "./own-keys";
 
 // Recursive type that defines the structure of the mutators that can be passed to a state node for a given Type
 // It defines that what type of mutators can be associated with each node in the tree based on what type of data that

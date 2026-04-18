@@ -1,7 +1,7 @@
-import { OwnKeys } from "./OwnKeys";
-import { IsPrimitive } from "./IsPrimitive";
-import { ReadOnlyStateNodeInterface } from "./ReadOnlyStateNodeInterface";
-import { ReadOnlyDynamicallyTraversable } from "./ReadOnlyDynamicallyTraversable";
+import { OwnKeys } from "./own-keys";
+import { IsPrimitive } from "./is-primitive";
+import { ReadOnlyStateNodeInterface } from "./read-only-state-node-interface";
+import { ReadOnlyDynamicallyTraversable } from "./read-only-dynamically-traversable";
 
 // Recursive type to represent a read only node in the state tree. It type-hints for the default read methods available on every state
 // node to get, subscribe, byKey etc. as well as type-hinting for any child nodes in the tree, so you can still continually

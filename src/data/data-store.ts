@@ -1,8 +1,8 @@
-import { Treedux } from "../Treedux";
-import { StateNode } from "./StateNode";
-import { MutatorCreators } from "../Type/MutatorCreators";
-import { RecursiveStateNode } from "../Type/RecursiveStateNode";
-import { MutatorInterface } from "./MutatorInterface";
+import { Treedux } from "../treedux";
+import { StateNode } from "./state-node";
+import { MutatorCreators } from "../type/mutator-creators";
+import { RecursiveStateNode } from "../type/recursive-state-node";
+import { MutatorInterface } from "./mutator-interface";
 
 interface DataStoreOptions<State, Mutators extends MutatorCreators<State, State>>
 {
