@@ -5,20 +5,20 @@
     "moduleResolution": "node",
     "declaration": true,
     "outDir": "./dist",
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
     "lib": [
       "dom",
       "es2015",
       "es2021.weakref"
     ],
-    "emitDeclarationOnly": true,
     "esModuleInterop": true
   },
   "exclude": [
     "node_modules",
     "**/*/*.d.ts"
   ],
-  "include": [],
-  "files": [
-    "src/index.ts"
+  "include": [
+    "src/**/*.ts"
   ]
 }

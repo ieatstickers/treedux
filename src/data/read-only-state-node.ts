@@ -1,9 +1,9 @@
 import { READ_ONLY_NODE_CACHE, Treedux } from "../treedux";
 import { Objects } from "../utility/objects";
-import { ObjectKeys } from "../Type/ObjectKeys";
-import { ObjectPropertyType } from "../Type/ObjectPropertyType";
-import { ReadOnlyRecursiveStateNode } from "../Type/ReadOnlyRecursiveStateNode";
-import { ReadOnlyStateNodeInterface } from "../Type/ReadOnlyStateNodeInterface";
+import { ObjectKeys } from "../type/object-keys";
+import { ObjectPropertyType } from "../type/object-property-type";
+import { ReadOnlyRecursiveStateNode } from "../type/read-only-recursive-state-node";
+import { ReadOnlyStateNodeInterface } from "../type/read-only-state-node-interface";
 import equal from "fast-deep-equal";
 
 type ReadOnlyStateNodeOptions = {

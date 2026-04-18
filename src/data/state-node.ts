@@ -1,14 +1,14 @@
-import { DefaultActionEnum } from "../Enum/default-action-enum";
+import { DefaultActionEnum } from "../enum/default-action-enum";
 import { NODE_CACHE, Treedux } from "../treedux";
 import { Objects } from "../utility/objects";
 import { Action } from "./action";
-import { RecursiveStateNode } from "../Type/RecursiveStateNode";
-import { MutatorCreators } from "../Type/MutatorCreators";
-import { StateNodeInterface } from "../Type/StateNodeInterface";
+import { RecursiveStateNode } from "../type/recursive-state-node";
+import { MutatorCreators } from "../type/mutator-creators";
+import { StateNodeInterface } from "../type/state-node-interface";
 import { MutatorInterface } from "./mutator-interface";
-import { ObjectKeys } from "../Type/ObjectKeys";
-import { ObjectPropertyType } from "../Type/ObjectPropertyType";
-import { ReadOnlyRecursiveStateNode } from "../Type/ReadOnlyRecursiveStateNode";
+import { ObjectKeys } from "../type/object-keys";
+import { ObjectPropertyType } from "../type/object-property-type";
+import { ReadOnlyRecursiveStateNode } from "../type/read-only-recursive-state-node";
 import { ReadOnlyStateNode } from "./read-only-state-node";
 import equal from "fast-deep-equal";
 
