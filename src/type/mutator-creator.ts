@@ -1,4 +1,4 @@
-import { Treedux } from "../Treedux";
+import { Treedux } from "../treeduxx";
 import { MutatorInterface } from "../data/mutator-interface";
 
 // A mutator creator is a function that returns an instance of a MutatorInterface

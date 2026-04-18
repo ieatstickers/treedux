@@ -1,4 +1,4 @@
-import { Treedux } from "../Treedux";
+import { Treedux } from "../treeduxx";
 
 export class Action<Payload>
 {
