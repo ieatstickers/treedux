@@ -4,7 +4,10 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.ReadOnlyStateNode = void 0;
+var _Treedux = require("../Treedux");
 var _Objects = require("../Utility/Objects");
+var _fastDeepEqual = _interopRequireDefault(require("fast-deep-equal"));
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 class ReadOnlyStateNode {
   keyPath = [];
   constructor(options, treedux) {
@@ -12,7 +15,12 @@ class ReadOnlyStateNode {
     this.keyPath = options.keyPath;
   }
   static create(options, treedux) {
-    return new ReadOnlyStateNode(options, treedux).createProxy();
+    const cache = treedux[_Treedux.READ_ONLY_NODE_CACHE];
+    const existing = cache.get(options.keyPath);
+    if (existing) return existing;
+    const node = new ReadOnlyStateNode(options, treedux).createProxy();
+    cache.set(options.keyPath, node);
+    return node;
   }
   get() {
     const keys = [...this.keyPath];
@@ -36,7 +44,7 @@ class ReadOnlyStateNode {
     let currentValue = this.lastKnownValue;
     return this.treedux.subscribe(() => {
       const newValue = this.get();
-      if (JSON.stringify(newValue) === JSON.stringify(currentValue)) return;
+      if ((0, _fastDeepEqual.default)(newValue, currentValue)) return;
       currentValue = newValue;
       callback(currentValue);
     });

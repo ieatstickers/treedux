@@ -10,17 +10,23 @@ import { Action } from "./Data/Action";
 import { DefaultActionEnum } from "./Enum/DefaultActionEnum";
 import { Objects } from "./Utility/Objects";
 import { DefaultDataStoreMap } from "./Type/DefaultDataStoreMap";
+import { NodeCache } from "./Data/NodeCache";
 
 // Reducer map for Redux store
 type ReducerMap<DataStoreMap extends DefaultDataStoreMap> = {
   [K in keyof DataStoreMap]: ReturnType<typeof createSlice>["reducer"];
 };
 
+export const NODE_CACHE = Symbol("treedux.node_cache");
+export const READ_ONLY_NODE_CACHE = Symbol("treedux.read_only_node_cache");
+
 export class Treedux<DataStoreMap extends DefaultDataStoreMap = DefaultDataStoreMap>
 {
   private readonly storeInstance: EnhancedStore;
   private readonly dataStores: DataStoreMap;
   private readonly subscribers: Set<() => void> = new Set();
+  private readonly nodeCache: NodeCache;
+  private readonly readOnlyNodeCache: NodeCache;
 
   protected constructor(
     dataStores: DataStoreMap,
@@ -30,6 +36,8 @@ export class Treedux<DataStoreMap extends DefaultDataStoreMap = DefaultDataStore
   )
   {
     this.dataStores = dataStores;
+    this.nodeCache = new NodeCache();
+    this.readOnlyNodeCache = new NodeCache();
     options = options || {};
     const reducerMap: Partial<ReducerMap<DataStoreMap>> = {};
 
@@ -121,5 +129,15 @@ export class Treedux<DataStoreMap extends DefaultDataStoreMap = DefaultDataStore
   protected notifySubscribers(): void
   {
     this.subscribers.forEach(subscriber => subscriber());
+  }
+
+  public get [NODE_CACHE](): NodeCache
+  {
+    return this.nodeCache;
+  }
+
+  public get [READ_ONLY_NODE_CACHE](): NodeCache
+  {
+    return this.readOnlyNodeCache;
   }
 }

@@ -483,6 +483,64 @@ describe("Treedux", () => {
 
   });
 
+  describe("node identity", () => {
+
+    it("returns the same StateNode proxy for repeated lookups of the same path", () => {
+      const treedux = Treedux.init({
+        test: TestDataStore.create()
+      });
+
+      expect(treedux.state.test).toBe(treedux.state.test);
+      expect(treedux.state.test.user).toBe(treedux.state.test.user);
+      expect(treedux.state.test.user.name).toBe(treedux.state.test.user.name);
+    });
+
+    it("returns the same StateNode proxy for repeated byKey lookups", () => {
+      const treedux = Treedux.init({
+        test: TestDataStore.create()
+      });
+
+      const a = treedux.state.test.dynamicObject.byKey("example");
+      const b = treedux.state.test.dynamicObject.byKey("example");
+
+      expect(a).toBe(b);
+    });
+
+    it("returns different proxies for the same path across different Treedux instances", () => {
+      const treeduxA = Treedux.init({
+        test: TestDataStore.create()
+      });
+      const treeduxB = Treedux.init({
+        test: TestDataStore.create()
+      });
+
+      expect(treeduxA.state.test.user).not.toBe(treeduxB.state.test.user);
+    });
+
+    it("returns the same ReadOnlyStateNode proxy for repeated lookups", () => {
+      const treedux = Treedux.init({
+        test: TestDataStore.create()
+      });
+
+      const a = treedux.state.test.user.toReadOnly();
+      const b = treedux.state.test.user.toReadOnly();
+
+      expect(a).toBe(b);
+    });
+
+    it("caches ReadOnlyStateNode proxies independently from StateNode proxies", () => {
+      const treedux = Treedux.init({
+        test: TestDataStore.create()
+      });
+
+      const rw = treedux.state.test.user;
+      const ro = treedux.state.test.user.toReadOnly();
+
+      expect(ro).not.toBe(rw);
+    });
+
+  });
+
   describe("Treedux", () => {
 
     describe("dispatch", () => {

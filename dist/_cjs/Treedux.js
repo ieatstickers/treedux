@@ -3,16 +3,21 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Treedux = void 0;
+exports.Treedux = exports.READ_ONLY_NODE_CACHE = exports.NODE_CACHE = void 0;
 var _toolkit = require("@reduxjs/toolkit");
 var _DefaultActionEnum = require("./Enum/DefaultActionEnum");
 var _Objects = require("./Utility/Objects");
+var _NodeCache = require("./Data/NodeCache");
 // Reducer map for Redux store
 
+const NODE_CACHE = exports.NODE_CACHE = Symbol("treedux.node_cache");
+const READ_ONLY_NODE_CACHE = exports.READ_ONLY_NODE_CACHE = Symbol("treedux.read_only_node_cache");
 class Treedux {
   subscribers = new Set();
   constructor(dataStores, options) {
     this.dataStores = dataStores;
+    this.nodeCache = new _NodeCache.NodeCache();
+    this.readOnlyNodeCache = new _NodeCache.NodeCache();
     options = options || {};
     const reducerMap = {};
 
@@ -80,6 +85,12 @@ class Treedux {
   }
   notifySubscribers() {
     this.subscribers.forEach(subscriber => subscriber());
+  }
+  get [NODE_CACHE]() {
+    return this.nodeCache;
+  }
+  get [READ_ONLY_NODE_CACHE]() {
+    return this.readOnlyNodeCache;
   }
 }
 exports.Treedux = Treedux;

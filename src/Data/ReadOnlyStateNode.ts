@@ -1,4 +1,4 @@
-import { Treedux } from "../Treedux";
+import { READ_ONLY_NODE_CACHE, Treedux } from "../Treedux";
 import { Objects } from "../Utility/Objects";
 import { ObjectKeys } from "../Type/ObjectKeys";
 import { ObjectPropertyType } from "../Type/ObjectPropertyType";
@@ -27,7 +27,14 @@ export class ReadOnlyStateNode<StateNodeType, StateInterface> implements ReadOnl
 
   public static create<StateNodeType, StateInterface>(options: ReadOnlyStateNodeOptions, treedux: Treedux): ReadOnlyRecursiveStateNode<StateNodeType, StateInterface>
   {
-    return (new ReadOnlyStateNode<StateNodeType, StateInterface>(options, treedux)).createProxy();
+    const cache = treedux[READ_ONLY_NODE_CACHE];
+
+    const existing = cache.get<ReadOnlyRecursiveStateNode<StateNodeType, StateInterface>>(options.keyPath);
+    if (existing) return existing;
+
+    const node = (new ReadOnlyStateNode<StateNodeType, StateInterface>(options, treedux)).createProxy();
+    cache.set(options.keyPath, node);
+    return node;
   }
 
   public get(): StateNodeType
