@@ -1,5 +1,5 @@
 import { READ_ONLY_NODE_CACHE, Treedux } from "../Treedux";
-import { Objects } from "../Utility/Objects";
+import { Objects } from "../utility/objects";
 import { ObjectKeys } from "../Type/ObjectKeys";
 import { ObjectPropertyType } from "../Type/ObjectPropertyType";
 import { ReadOnlyRecursiveStateNode } from "../Type/ReadOnlyRecursiveStateNode";

@@ -32,7 +32,7 @@ let DefaultActionEnum = /* @__PURE__ */ function(DefaultActionEnum) {
 	return DefaultActionEnum;
 }({});
 //#endregion
-//#region src/Utility/Objects.ts
+//#region src/utility/objects.ts
 var Objects = class {
 	static isObject(value) {
 		return typeof value === "object" && value !== null;
