@@ -6,7 +6,7 @@ import {
   EnhancedStore,
   Unsubscribe
 } from "@reduxjs/toolkit";
-import { Action } from "./Data/Action";
+import { Action } from "./data/actionn";
 import { DefaultActionEnum } from "./Enum/default-action-enum";
 import { Objects } from "./utility/objects";
 import { DefaultDataStoreMap } from "./Type/DefaultDataStoreMap";

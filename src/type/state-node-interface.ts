@@ -1,4 +1,4 @@
-import { Action } from "../Data/Action";
+import { Action } from "../data/actionn";
 import { ReadOnlyRecursiveStateNode } from "./read-only-recursive-state-node";
 
 // Interface to define default methods available on every state node

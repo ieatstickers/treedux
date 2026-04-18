@@ -3,7 +3,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { DataStore } from "./data/data-store";
 import { AbstractMutator } from "./data/abstract-mutator";
-import { Action } from "./Data/Action";
+import { Action } from "./data/actionn";
 import { Treedux } from "./Treedux";
 
 export interface TestDataStoreInterface
