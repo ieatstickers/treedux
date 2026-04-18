@@ -1,7 +1,7 @@
 import { DefaultActionEnum } from "../Enum/default-action-enum";
 import { NODE_CACHE, Treedux } from "../Treedux";
 import { Objects } from "../utility/objects";
-import { Action } from "./actionn";
+import { Action } from "./action";
 import { RecursiveStateNode } from "../Type/RecursiveStateNode";
 import { MutatorCreators } from "../Type/MutatorCreators";
 import { StateNodeInterface } from "../Type/StateNodeInterface";

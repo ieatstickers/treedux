@@ -1,4 +1,4 @@
-import { Action } from "./actionn";
+import { Action } from "./action";
 
 export interface MutatorInterface<State, Payload = any>
 {

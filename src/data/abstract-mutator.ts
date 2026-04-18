@@ -1,6 +1,6 @@
 import { Treedux } from "../Treedux";
 import { MutatorInterface } from "./mutator-interface";
-import { Action } from "./actionn";
+import { Action } from "./action";
 
 export abstract class AbstractMutator<State, Payload = any> implements MutatorInterface<State, Payload>
 {
