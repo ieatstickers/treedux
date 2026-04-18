@@ -1,8 +1,8 @@
 export { Treedux } from "./Treedux";
-export { DataStore } from "./Data/DataStore";
-export { AbstractMutator } from "./Data/AbstractMutator";
+export { DataStore } from "./data/data-store";
+export { AbstractMutator } from "./data/abstract-mutator";
 export { Action } from "./Data/Action";
-export { StateNode } from "./Data/StateNode";
+export { StateNode } from "./data/state-node";
 export { DefaultActionEnum } from "./Enum/default-action-enum";
 export type { RecursiveStateNode } from "./Type/RecursiveStateNode";
 export type { DefaultDataStoreMap } from "./Type/DefaultDataStoreMap";

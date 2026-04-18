@@ -1,5 +1,5 @@
 import { Treedux } from "../Treedux";
-import { MutatorInterface } from "../Data/MutatorInterface";
+import { MutatorInterface } from "../data/mutator-interface";
 
 // A mutator creator is a function that returns an instance of a MutatorInterface
 // Treedux doesn't hold the entire state tree in memory. Instead, it type-hints for the whole tree and only creates

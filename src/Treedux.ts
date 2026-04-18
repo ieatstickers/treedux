@@ -10,7 +10,7 @@ import { Action } from "./Data/Action";
 import { DefaultActionEnum } from "./Enum/default-action-enum";
 import { Objects } from "./utility/objects";
 import { DefaultDataStoreMap } from "./Type/DefaultDataStoreMap";
-import { NodeCache } from "./Data/NodeCache";
+import { NodeCache } from "./data/node-cache";
 
 // Reducer map for Redux store
 type ReducerMap<DataStoreMap extends DefaultDataStoreMap> = {

@@ -1,8 +1,8 @@
 // UserStore.ts
 
 import { describe, it, expect, vi } from "vitest";
-import { DataStore } from "./Data/DataStore";
-import { AbstractMutator } from "./Data/AbstractMutator";
+import { DataStore } from "./data/data-store";
+import { AbstractMutator } from "./data/abstract-mutator";
 import { Action } from "./Data/Action";
 import { Treedux } from "./Treedux";
 

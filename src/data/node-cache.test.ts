@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { NodeCache } from "./NodeCache";
+import { NodeCache } from "./node-cache";
 
 describe("NodeCache", () => {
 

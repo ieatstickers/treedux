@@ -5,11 +5,11 @@ import { Action } from "./Action";
 import { RecursiveStateNode } from "../Type/RecursiveStateNode";
 import { MutatorCreators } from "../Type/MutatorCreators";
 import { StateNodeInterface } from "../Type/StateNodeInterface";
-import { MutatorInterface } from "./MutatorInterface";
+import { MutatorInterface } from "./mutator-interface";
 import { ObjectKeys } from "../Type/ObjectKeys";
 import { ObjectPropertyType } from "../Type/ObjectPropertyType";
 import { ReadOnlyRecursiveStateNode } from "../Type/ReadOnlyRecursiveStateNode";
-import { ReadOnlyStateNode } from "./ReadOnlyStateNode";
+import { ReadOnlyStateNode } from "./read-only-state-node";
 import equal from "fast-deep-equal";
 
 type StateNodeOptions<T, StateInterface> = {
