@@ -5,7 +5,7 @@ import { MutatorMethods } from "./mutator-methods";
 import { IsPrimitive } from "./is-primitive";
 import { ExtractMutatorCreators } from "./extract-mutator-creators";
 import { DynamicallyTraversable } from "./dynamically-traversable";
-import { Deletable } from "./Deletable";
+import { Deletable } from "./deletablee";
 
 // Recursive type to represent a node in the state tree. It type-hints for the default methods available on every state
 // node to get, set, subscribe etc. as well as any custom mutator methods that have been passed in. It also type-hints
