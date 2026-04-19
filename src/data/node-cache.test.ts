@@ -1,15 +1,35 @@
-import { describe, it, expect } from "vitest";
-import { NodeCache } from "./node-cache";
+import { describe, it, expect, vi } from "vitest";
+import { GcNodeCache } from "./gc-node-cache";
 
-describe("NodeCache", () => {
+describe("GcNodeCache", () => {
+
+  describe("isSupported", () => {
+
+    it("returns true when WeakRef and FinalizationRegistry are available", () => {
+      expect(GcNodeCache.isSupported()).toBe(true);
+    });
+
+    it("returns false when WeakRef is missing", () => {
+      vi.stubGlobal("WeakRef", undefined);
+      expect(GcNodeCache.isSupported()).toBe(false);
+      vi.unstubAllGlobals();
+    });
+
+    it("returns false when FinalizationRegistry is missing", () => {
+      vi.stubGlobal("FinalizationRegistry", undefined);
+      expect(GcNodeCache.isSupported()).toBe(false);
+      vi.unstubAllGlobals();
+    });
+
+  });
 
   it("returns null when a key has never been set", () => {
-    const cache = new NodeCache();
+    const cache = new GcNodeCache();
     expect(cache.get([ "missing" ])).toBeNull();
   });
 
   it("returns the same object after set/get", () => {
-    const cache = new NodeCache();
+    const cache = new GcNodeCache();
     const value = { id: 1 };
 
     cache.set([ "a", "b" ], value);
@@ -18,7 +38,7 @@ describe("NodeCache", () => {
   });
 
   it("distinguishes different key paths", () => {
-    const cache = new NodeCache();
+    const cache = new GcNodeCache();
     const a = { id: "a" };
     const b = { id: "b" };
 
@@ -30,7 +50,7 @@ describe("NodeCache", () => {
   });
 
   it("overrides a value when set is called again with the same path", () => {
-    const cache = new NodeCache();
+    const cache = new GcNodeCache();
     const first = { v: 1 };
     const second = { v: 2 };
 
@@ -41,7 +61,7 @@ describe("NodeCache", () => {
   });
 
   it("uses the full path rather than a flattened key", () => {
-    const cache = new NodeCache();
+    const cache = new GcNodeCache();
     const value = { v: "target" };
 
     cache.set([ "a", "b" ], value);
@@ -52,7 +72,7 @@ describe("NodeCache", () => {
   });
 
   it("evicts the entry after the value is garbage collected", async () => {
-    const cache = new NodeCache();
+    const cache = new GcNodeCache();
 
     cache.set([ "a" ], {});
 

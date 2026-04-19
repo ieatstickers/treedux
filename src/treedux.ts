@@ -10,7 +10,9 @@ import { Action } from "./data/action";
 import { DefaultActionEnum } from "./enum/default-action-enum";
 import { Objects } from "./utility/objects";
 import { DefaultDataStoreMap } from "./type/default-data-store-map";
-import { NodeCache } from "./data/node-cache";
+import { GcNodeCache } from "./data/gc-node-cache";
+import { NodeCacheInterface } from "./data/node-cache-interface";
+import { LazyNodeCache } from "./data/lazy-node-cache";
 
 // Reducer map for Redux store
 type ReducerMap<DataStoreMap extends DefaultDataStoreMap> = {
@@ -25,8 +27,8 @@ export class Treedux<DataStoreMap extends DefaultDataStoreMap = DefaultDataStore
   private readonly storeInstance: EnhancedStore;
   private readonly dataStores: DataStoreMap;
   private readonly subscribers: Set<() => void> = new Set();
-  private readonly nodeCache: NodeCache;
-  private readonly readOnlyNodeCache: NodeCache;
+  private readonly nodeCache: NodeCacheInterface;
+  private readonly readOnlyNodeCache: NodeCacheInterface;
 
   protected constructor(
     dataStores: DataStoreMap,
@@ -36,8 +38,9 @@ export class Treedux<DataStoreMap extends DefaultDataStoreMap = DefaultDataStore
   )
   {
     this.dataStores = dataStores;
-    this.nodeCache = new NodeCache();
-    this.readOnlyNodeCache = new NodeCache();
+    const hasGcSupport = GcNodeCache.isSupported();
+    this.nodeCache = hasGcSupport ? new GcNodeCache() : new LazyNodeCache();
+    this.readOnlyNodeCache = hasGcSupport ? new GcNodeCache() : new LazyNodeCache();
     options = options || {};
     const reducerMap: Partial<ReducerMap<DataStoreMap>> = {};
 
@@ -131,12 +134,12 @@ export class Treedux<DataStoreMap extends DefaultDataStoreMap = DefaultDataStore
     this.subscribers.forEach(subscriber => subscriber());
   }
 
-  public get [NODE_CACHE](): NodeCache
+  public get [NODE_CACHE](): NodeCacheInterface
   {
     return this.nodeCache;
   }
 
-  public get [READ_ONLY_NODE_CACHE](): NodeCache
+  public get [READ_ONLY_NODE_CACHE](): NodeCacheInterface
   {
     return this.readOnlyNodeCache;
   }
