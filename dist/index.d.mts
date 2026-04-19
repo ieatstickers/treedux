@@ -125,13 +125,10 @@ type DefaultDataStoreMap = {
   [key: string]: DataStore<any, any>;
 };
 //#endregion
-//#region src/data/node-cache.d.ts
-declare class NodeCache {
-  private readonly cache;
-  private readonly registry;
+//#region src/data/node-cache-interface.d.ts
+interface NodeCacheInterface {
   get<T extends object>(keyPath: Array<string>): T | null;
   set<T extends object>(keyPath: Array<string>, value: T): void;
-  private toKey;
 }
 //#endregion
 //#region src/treedux.d.ts
@@ -154,8 +151,8 @@ declare class Treedux<DataStoreMap extends DefaultDataStoreMap = DefaultDataStor
   subscribe(subscriber: () => void): Unsubscribe;
   dispatch(...actions: Array<Action<any>>): void;
   protected notifySubscribers(): void;
-  get [NODE_CACHE](): NodeCache;
-  get [READ_ONLY_NODE_CACHE](): NodeCache;
+  get [NODE_CACHE](): NodeCacheInterface;
+  get [READ_ONLY_NODE_CACHE](): NodeCacheInterface;
 }
 //#endregion
 //#region src/data/abstract-mutator.d.ts

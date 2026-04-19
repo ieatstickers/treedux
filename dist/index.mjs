@@ -40,12 +40,15 @@ var Objects = class {
 	}
 };
 //#endregion
-//#region src/data/node-cache.ts
-var NodeCache = class {
+//#region src/data/gc-node-cache.ts
+var GcNodeCache = class {
 	cache = /* @__PURE__ */ new Map();
 	registry = new FinalizationRegistry((key) => {
 		this.cache.delete(key);
 	});
+	static isSupported() {
+		return typeof WeakRef !== "undefined" && typeof FinalizationRegistry !== "undefined";
+	}
 	get(keyPath) {
 		return this.cache.get(this.toKey(keyPath))?.deref() ?? null;
 	}
@@ -53,6 +56,21 @@ var NodeCache = class {
 		const key = this.toKey(keyPath);
 		this.cache.set(key, new WeakRef(value));
 		this.registry.register(value, key);
+	}
+	toKey(keyPath) {
+		return keyPath.join("\0");
+	}
+};
+//#endregion
+//#region src/data/lazy-node-cache.ts
+var LazyNodeCache = class {
+	cache = /* @__PURE__ */ new Map();
+	get(keyPath) {
+		return this.cache.get(this.toKey(keyPath)) ?? null;
+	}
+	set(keyPath, value) {
+		const key = this.toKey(keyPath);
+		this.cache.set(key, value);
 	}
 	toKey(keyPath) {
 		return keyPath.join("\0");
@@ -70,8 +88,9 @@ var Treedux = class Treedux {
 	readOnlyNodeCache;
 	constructor(dataStores, options) {
 		this.dataStores = dataStores;
-		this.nodeCache = new NodeCache();
-		this.readOnlyNodeCache = new NodeCache();
+		const hasGcSupport = GcNodeCache.isSupported();
+		this.nodeCache = hasGcSupport ? new GcNodeCache() : new LazyNodeCache();
+		this.readOnlyNodeCache = hasGcSupport ? new GcNodeCache() : new LazyNodeCache();
 		options = options || {};
 		const reducerMap = {};
 		for (const key in this.dataStores) {

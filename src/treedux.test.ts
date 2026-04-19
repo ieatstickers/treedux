@@ -4,7 +4,9 @@ import { describe, it, expect, vi } from "vitest";
 import { DataStore } from "./data/data-store";
 import { AbstractMutator } from "./data/abstract-mutator";
 import { Action } from "./data/action";
-import { Treedux } from "./treedux";
+import { Treedux, NODE_CACHE, READ_ONLY_NODE_CACHE } from "./treedux";
+import { GcNodeCache } from "./data/gc-node-cache";
+import { LazyNodeCache } from "./data/lazy-node-cache";
 
 export interface TestDataStoreInterface
 {
@@ -573,6 +575,29 @@ describe("Treedux", () => {
   });
 
   describe("Treedux", () => {
+
+    describe("node cache selection", () => {
+
+      it("uses GcNodeCache when WeakRef and FinalizationRegistry are available", () => {
+        const treedux = Treedux.init({ test: TestDataStore.create() });
+
+        expect(treedux[NODE_CACHE]).toBeInstanceOf(GcNodeCache);
+        expect(treedux[READ_ONLY_NODE_CACHE]).toBeInstanceOf(GcNodeCache);
+      });
+
+      it("falls back to LazyNodeCache when GC support is unavailable", () => {
+        vi.stubGlobal("WeakRef", undefined);
+        vi.stubGlobal("FinalizationRegistry", undefined);
+
+        const treedux = Treedux.init({ test: TestDataStore.create() });
+
+        expect(treedux[NODE_CACHE]).toBeInstanceOf(LazyNodeCache);
+        expect(treedux[READ_ONLY_NODE_CACHE]).toBeInstanceOf(LazyNodeCache);
+
+        vi.unstubAllGlobals();
+      });
+
+    });
 
     describe("dispatch", () => {
 
