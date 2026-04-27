@@ -38,8 +38,9 @@ var Objects = class {
 		return typeof value === "object" && value !== null;
 	}
 	static setByKeyPath(keyPath, value, target) {
+		if (keyPath.length === 0) return target;
 		const path = [...keyPath];
-		const newObject = this.deepCopy(target);
+		const newObject = Array.isArray(target) ? [...target] : { ...target };
 		let currentObj = newObject;
 		while (path.length > 0) {
 			const key = path.shift();
@@ -51,16 +52,10 @@ var Objects = class {
 			if (!currentObj[key]) {
 				if (typeof value == "undefined") return newObject;
 				currentObj[key] = {};
-			}
+			} else currentObj[key] = Array.isArray(currentObj[key]) ? [...currentObj[key]] : { ...currentObj[key] };
 			currentObj = currentObj[key];
 		}
 		return newObject;
-	}
-	static deepCopy(object) {
-		if (typeof object !== "object" || object === null) return object;
-		const result = Array.isArray(object) ? [] : {};
-		for (const key in object) if (Object.prototype.hasOwnProperty.call(object, key)) result[key] = this.deepCopy(object[key]);
-		return result;
 	}
 };
 //#endregion
