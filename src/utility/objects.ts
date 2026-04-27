@@ -7,13 +7,16 @@ export class Objects
 
   public static setByKeyPath<V, T>(keyPath: Array<string>, value: V, target: T): T
   {
+    // No path to follow — nothing to change, return the original reference.
+    if (keyPath.length === 0) return target;
+
     // Make a copy of the keyPath array to avoid modifying the original array.
     const path = [ ...keyPath ];
 
-    // Create a deep copy of the object.
-    const newObject: T = this.deepCopy(target);
+    // Shallow-copy the root so siblings retain their original references.
+    const newObject: any = Array.isArray(target) ? [ ...target ] : { ...target };
 
-    // Initialize the current object as the deep copy of the object passed to the function.
+    // Initialize the current object as the shallow copy of the object passed to the function.
     let currentObj: any = newObject;
 
     // Iterate through the keys in the path.
@@ -43,37 +46,17 @@ export class Objects
 
         currentObj[key] = {};
       }
+      else
+      {
+        // Shallow-copy the child onto its parent before descending so only nodes along the path get new references.
+        currentObj[key] = Array.isArray(currentObj[key]) ? [ ...currentObj[key] ] : { ...currentObj[key] };
+      }
 
       // Move the reference to the nested object.
       currentObj = currentObj[key];
     }
 
-    // Return the modified deep copy.
+    // Return the modified shallow copy.
     return newObject;
-  }
-
-  private static deepCopy<T>(object: T): T
-  {
-    // If the object is not an object or null, return it directly.
-    if (typeof object !== "object" || object === null)
-    {
-      return object;
-    }
-
-    // Initialize the result as an array if the input object is an array, otherwise as an object.
-    const result: any = Array.isArray(object) ? [] : {};
-
-    // Iterate through the keys of the input object.
-    for (const key in object)
-    {
-      if (Object.prototype.hasOwnProperty.call(object, key))
-      {
-        // Recursively call deepCopy to copy the nested properties.
-        result[key] = this.deepCopy(object[key]);
-      }
-    }
-
-    // Return the cloned object.
-    return result as T;
   }
 }
