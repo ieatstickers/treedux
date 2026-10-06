@@ -20,7 +20,6 @@ type StateNodeOptions<T, StateInterface> = {
 export class StateNode<StateNodeType, ParentStateNodeType, StateInterface, Options extends StateNodeOptions<StateNodeType, StateInterface> = StateNodeOptions<StateNodeType, StateInterface>> implements StateNodeInterface<StateNodeType, StateInterface>
 {
   private readonly treedux: Treedux;
-  private lastKnownValue: StateNodeType;
   private readonly keyPath: Array<string> = [];
   private readonly mutators: Options["mutators"];
 
@@ -63,13 +62,11 @@ export class StateNode<StateNodeType, ParentStateNodeType, StateInterface, Optio
       }
       else
       {
-        this.lastKnownValue = undefined;
-        return this.lastKnownValue;
+        return undefined;
       }
     }
 
-    this.lastKnownValue = value;
-    return this.lastKnownValue;
+    return value;
   }
 
   public set(value: StateNodeType): Action<{ keyPath: Array<string>, value: StateNodeType }>

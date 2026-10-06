@@ -234,6 +234,24 @@ describe("Treedux", () => {
         ageUnsubscribe();
       });
 
+      it("does not fire a subscription attached without a prior get when an unrelated key path changes", () => {
+        const treedux = Treedux.init({
+          test: TestDataStore.create()
+        });
+
+        const subscriber = vi.fn();
+        const unsubscribe = treedux.state.test.user.name.subscribe(subscriber);
+
+        treedux.state.test.user.age.set(30).dispatch();
+        expect(subscriber).not.toHaveBeenCalled();
+
+        treedux.state.test.user.name.set("Jane Doe").dispatch();
+        expect(subscriber).toHaveBeenCalledTimes(1);
+        expect(subscriber).toHaveBeenCalledWith("Jane Doe");
+
+        unsubscribe();
+      });
+
       it("calls subscriber for dynamically accessed nodes", async () => {
         const treedux = Treedux.init({
           test: TestDataStore.create()
@@ -416,6 +434,24 @@ describe("Treedux", () => {
         userUnsubscribe();
         nameUnsubscribe();
         ageUnsubscribe();
+      });
+
+      it("does not fire a subscription attached without a prior get when an unrelated key path changes", () => {
+        const treedux = Treedux.init({
+          test: TestDataStore.create()
+        });
+
+        const subscriber = vi.fn();
+        const unsubscribe = treedux.state.test.user.name.toReadOnly().subscribe(subscriber);
+
+        treedux.state.test.user.age.set(30).dispatch();
+        expect(subscriber).not.toHaveBeenCalled();
+
+        treedux.state.test.user.name.set("Jane Doe").dispatch();
+        expect(subscriber).toHaveBeenCalledTimes(1);
+        expect(subscriber).toHaveBeenCalledWith("Jane Doe");
+
+        unsubscribe();
       });
 
       it("calls subscriber for dynamically accessed nodes", async () => {

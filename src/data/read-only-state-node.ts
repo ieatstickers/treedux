@@ -13,7 +13,6 @@ type ReadOnlyStateNodeOptions = {
 export class ReadOnlyStateNode<StateNodeType, StateInterface> implements ReadOnlyStateNodeInterface<StateNodeType>
 {
   private readonly treedux: Treedux;
-  private lastKnownValue: StateNodeType;
   private readonly keyPath: Array<string> = [];
 
   protected constructor(
@@ -54,18 +53,16 @@ export class ReadOnlyStateNode<StateNodeType, StateInterface> implements ReadOnl
       }
       else
       {
-        this.lastKnownValue = undefined;
-        return this.lastKnownValue;
+        return undefined;
       }
     }
 
-    this.lastKnownValue = value;
-    return this.lastKnownValue!;
+    return value;
   }
 
   public subscribe(callback: (data: StateNodeType) => void): () => void
   {
-    let currentValue = this.lastKnownValue;
+    let currentValue = this.get();
 
     return this.treedux.subscribe(() => {
       const newValue = this.get();
