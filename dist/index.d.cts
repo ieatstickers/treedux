@@ -171,7 +171,6 @@ type StateNodeOptions<T, StateInterface> = {
 };
 declare class StateNode<StateNodeType, ParentStateNodeType, StateInterface, Options extends StateNodeOptions<StateNodeType, StateInterface> = StateNodeOptions<StateNodeType, StateInterface>> implements StateNodeInterface<StateNodeType, StateInterface> {
   private readonly treedux;
-  private lastKnownValue;
   private readonly keyPath;
   private readonly mutators;
   protected constructor(options: StateNodeOptions<StateNodeType, StateInterface>, treedux: Treedux);

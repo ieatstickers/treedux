@@ -196,7 +196,6 @@ var Action = class Action {
 //#region src/data/read-only-state-node.ts
 var ReadOnlyStateNode = class ReadOnlyStateNode {
 	treedux;
-	lastKnownValue;
 	keyPath = [];
 	constructor(options, treedux) {
 		this.treedux = treedux;
@@ -216,16 +215,12 @@ var ReadOnlyStateNode = class ReadOnlyStateNode {
 		while (keys.length > 0) {
 			const key = keys.shift();
 			if (Objects.isObject(value)) value = value[key];
-			else {
-				this.lastKnownValue = void 0;
-				return this.lastKnownValue;
-			}
+			else return;
 		}
-		this.lastKnownValue = value;
-		return this.lastKnownValue;
+		return value;
 	}
 	subscribe(callback) {
-		let currentValue = this.lastKnownValue;
+		let currentValue = this.get();
 		return this.treedux.subscribe(() => {
 			const newValue = this.get();
 			if ((0, fast_deep_equal.default)(newValue, currentValue)) return;
@@ -255,7 +250,6 @@ var ReadOnlyStateNode = class ReadOnlyStateNode {
 //#region src/data/state-node.ts
 var StateNode = class StateNode {
 	treedux;
-	lastKnownValue;
 	keyPath = [];
 	mutators;
 	constructor(options, treedux) {
@@ -277,13 +271,9 @@ var StateNode = class StateNode {
 		while (keys.length > 0) {
 			const key = keys.shift();
 			if (Objects.isObject(value) && value[key] !== void 0) value = value[key];
-			else {
-				this.lastKnownValue = void 0;
-				return this.lastKnownValue;
-			}
+			else return;
 		}
-		this.lastKnownValue = value;
-		return this.lastKnownValue;
+		return value;
 	}
 	set(value) {
 		return Action.create({
